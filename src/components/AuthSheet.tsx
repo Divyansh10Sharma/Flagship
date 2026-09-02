@@ -119,7 +119,7 @@ export default function AuthSheet({
             transition={{ duration: 0.2 }}
             onClick={onClose}
             className="fixed inset-0 z-50"
-            style={{ background: "rgba(5,6,11,0.7)", backdropFilter: "blur(6px)" }}
+            style={{ background: "rgba(8,6,5,0.84)" }}
           />
           <motion.div
             key="sheet"
@@ -130,18 +130,17 @@ export default function AuthSheet({
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? { opacity: 1 } : { opacity: 0, y: 16 }}
             transition={{ duration: 0.24, ease: "easeOut" }}
-            className="surface surface-lit fixed inset-x-4 top-1/2 z-50 mx-auto w-auto max-w-[440px] -translate-y-1/2 p-6 sm:inset-x-0"
-            style={{ boxShadow: "0 40px 90px -40px rgba(0,0,0,0.95)" }}
+            className="parchment fixed inset-x-4 top-1/2 z-50 mx-auto w-auto max-w-[440px] -translate-y-1/2 p-6 sm:inset-x-0"
           >
             {email ? (
               <>
-                <p className="text-[17px] text-chalk">Signed in as {email}</p>
-                <p className="mt-2 text-[15px] text-muted">
+                <p className="fell text-[20px]" style={{ color: "var(--sepia)" }}>Signed in as {email}</p>
+                <p className="mt-2 text-[15px]" style={{ color: "var(--sepia-soft)" }}>
                   Your days sync to this account automatically.
                 </p>
 
                 {userId && username && (
-                  <div className="mt-6 border-t border-edge pt-5">
+                  <div className="mt-6 pt-5" style={{ borderTop: "1px solid rgba(90,70,45,0.3)" }}>
                     <UsernameField
                       userId={userId}
                       username={username}
@@ -167,10 +166,10 @@ export default function AuthSheet({
               </>
             ) : (
               <form onSubmit={submit}>
-                <h2 className="expanded ink-gradient text-[26px] leading-none">
+                <h2 className="fell text-[30px] leading-none" style={{ color: "var(--sepia)" }}>
                   {mode === "in" ? "Sign in" : "Create account"}
                 </h2>
-                <p className="mt-2 text-[15px] text-muted">
+                <p className="fell mt-2 text-[17px]" style={{ color: "var(--sepia-soft)" }}>
                   Your streak follows you to any device.
                 </p>
 

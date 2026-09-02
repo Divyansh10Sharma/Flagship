@@ -1,100 +1,145 @@
+import { useMemo } from "react";
 import { useReducedMotion } from "motion/react";
 
 /**
- * The moving gradient field: three large blurred colour blobs drifting on long,
- * mismatched loops, a pair of slow waves along the bottom, and a grain layer to
- * kill the banding that big soft gradients always produce on dark screens.
+ * Night watch. A warm black sky with a scatter of stars, a galleon standing off
+ * on the horizon, three ranks of swell rolling past at different speeds, and a
+ * lantern glow low on the right that breathes.
  *
- * Pure CSS transforms on composited layers — no canvas, no WebGL, no rAF. Under
- * reduced motion the blobs stay exactly where they are and nothing animates.
+ * Deterministic star field — seeded from a fixed table rather than Math.random,
+ * so the sky does not reshuffle on every re-render.
  */
 export default function Background() {
   const reduce = useReducedMotion();
-  const anim = (name: string, secs: number, delay = 0) =>
-    reduce ? undefined : `${name} ${secs}s ease-in-out ${delay}s infinite`;
+
+  const stars = useMemo(() => {
+    // simple LCG so the layout is stable between renders and reloads
+    let seed = 20260902;
+    const rnd = () => ((seed = (seed * 1103515245 + 12345) & 0x7fffffff) / 0x7fffffff);
+    return Array.from({ length: 90 }, () => ({
+      x: rnd() * 100,
+      y: rnd() * 62,
+      r: 0.4 + rnd() * 0.9,
+      d: rnd() * 6,
+      o: 0.2 + rnd() * 0.5,
+    }));
+  }, []);
 
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
-      {/* base wash */}
-      <div className="absolute inset-0 bg-void" />
       <div
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(165deg, #070A16 0%, #0A0D1C 40%, #0B0A1B 70%, #05060B 100%)",
+            "linear-gradient(180deg, #0C0A07 0%, #120D08 38%, #0D0B08 62%, #080605 100%)",
         }}
       />
 
-      {/* drifting colour */}
-      <div
-        className="absolute -left-[20%] -top-[25%] h-[85vh] w-[85vh] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(124,107,245,0.55) 0%, rgba(124,107,245,0.16) 45%, transparent 70%)",
-          filter: "blur(90px)",
-          animation: anim("drift-a", 26),
-        }}
-      />
-      <div
-        className="absolute -bottom-[30%] -right-[15%] h-[90vh] w-[90vh] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(74,140,255,0.5) 0%, rgba(74,140,255,0.14) 45%, transparent 70%)",
-          filter: "blur(100px)",
-          animation: anim("drift-b", 32, -6),
-        }}
-      />
-      <div
-        className="absolute left-[25%] top-[30%] h-[70vh] w-[70vh] rounded-full"
-        style={{
-          background:
-            "radial-gradient(circle, rgba(160,86,255,0.4) 0%, rgba(88,50,170,0.12) 45%, transparent 70%)",
-          filter: "blur(110px)",
-          animation: anim("drift-c", 38, -14),
-        }}
-      />
-
-      {/* waves — two layers at different speeds so the crest never repeats visibly */}
-      <div className="absolute inset-x-0 bottom-0 h-[42vh] overflow-hidden">
-        <svg
-          className="absolute bottom-0 left-0 h-full w-[200%]"
-          viewBox="0 0 2880 320"
-          preserveAspectRatio="none"
-          style={{ animation: reduce ? undefined : "wave-slide 28s linear infinite", opacity: 0.5 }}
-        >
-          <path
-            fill="rgba(124,107,245,0.10)"
-            d="M0,160 C240,220 480,100 720,150 C960,200 1200,120 1440,160 C1680,220 1920,100 2160,150 C2400,200 2640,120 2880,160 L2880,320 L0,320 Z"
+      {/* stars */}
+      <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+        {stars.map((s, i) => (
+          <circle
+            key={i}
+            cx={s.x}
+            cy={s.y}
+            r={s.r / 6}
+            fill="#F3E6C8"
+            opacity={s.o}
+            style={
+              reduce
+                ? undefined
+                : { animation: `twinkle ${5 + (i % 5)}s ease-in-out ${s.d}s infinite` }
+            }
           />
-        </svg>
+        ))}
+      </svg>
+
+      {/* lantern glow, low and warm */}
+      <div
+        className="absolute"
+        style={{
+          right: "-10%",
+          bottom: "18%",
+          width: "70vh",
+          height: "70vh",
+          background:
+            "radial-gradient(circle, rgba(201,146,43,0.20) 0%, rgba(201,146,43,0.06) 40%, transparent 70%)",
+          animation: reduce ? undefined : "lantern 9s ease-in-out infinite",
+        }}
+      />
+
+      {/* the ship, hull-down on the horizon */}
+      <img
+        src="/ship.webp"
+        alt=""
+        aria-hidden="true"
+        draggable={false}
+        className={reduce ? "absolute" : "absolute bob"}
+        style={{
+          left: "6%",
+          bottom: "25vh",
+          width: "min(300px, 46vw)",
+          opacity: 0.72,
+          // sits in the dark rather than on top of it
+          filter: "brightness(0.82) contrast(1.05) drop-shadow(0 10px 26px rgba(0,0,0,0.8))",
+        }}
+      />
+
+      {/* swell — three ranks, slowest at the back */}
+      <div className="absolute inset-x-0 bottom-0 h-[34vh] overflow-hidden">
+        {[
+          { fill: "#0E0B07", dur: 46, y: 0, o: 1 },
+          { fill: "#120E09", dur: 34, y: 26, o: 1 },
+          { fill: "#171009", dur: 24, y: 54, o: 1 },
+        ].map((w, n) => (
+          <svg
+            key={n}
+            className="absolute bottom-0 left-0 h-full w-[200%]"
+            viewBox="0 0 2880 320"
+            preserveAspectRatio="none"
+            style={{
+              transform: `translateY(${w.y}px)`,
+              opacity: w.o,
+              animation: reduce ? undefined : `swell ${w.dur}s linear infinite`,
+            }}
+          >
+            <path
+              fill={w.fill}
+              d={
+                n === 0
+                  ? "M0,150 C240,110 480,190 720,150 C960,110 1200,190 1440,150 C1680,110 1920,190 2160,150 C2400,110 2640,190 2880,150 L2880,320 L0,320 Z"
+                  : n === 1
+                    ? "M0,180 C300,140 600,220 900,180 C1200,140 1500,220 1800,180 C2100,140 2400,220 2880,180 L2880,320 L0,320 Z"
+                    : "M0,215 C360,180 720,250 1080,215 C1440,180 1800,250 2160,215 C2520,180 2760,240 2880,218 L2880,320 L0,320 Z"
+              }
+            />
+          </svg>
+        ))}
+        {/* foam catching the lantern */}
         <svg
           className="absolute bottom-0 left-0 h-full w-[200%]"
           viewBox="0 0 2880 320"
           preserveAspectRatio="none"
-          style={{ animation: reduce ? undefined : "wave-slide 44s linear infinite", opacity: 0.45 }}
+          style={{
+            transform: "translateY(54px)",
+            animation: reduce ? undefined : "swell 24s linear infinite",
+          }}
         >
           <path
-            fill="rgba(74,140,255,0.09)"
-            d="M0,200 C300,140 600,240 900,190 C1200,140 1500,230 1800,195 C2100,150 2400,235 2880,185 L2880,320 L0,320 Z"
+            fill="none"
+            stroke="rgba(201,146,43,0.16)"
+            strokeWidth="1.5"
+            d="M0,215 C360,180 720,250 1080,215 C1440,180 1800,250 2160,215 C2520,180 2760,240 2880,218"
           />
         </svg>
       </div>
 
-      {/* keeps text off the brightest part of the field */}
+      {/* vignette */}
       <div
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(120% 90% at 50% 0%, transparent 25%, rgba(5,6,11,0.55) 78%, rgba(5,6,11,0.85) 100%)",
-        }}
-      />
-
-      {/* grain — large soft gradients band badly on dark panels without it */}
-      <div
-        className="absolute inset-0 opacity-[0.055] mix-blend-overlay"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+            "radial-gradient(120% 90% at 50% 8%, transparent 28%, rgba(8,6,5,0.6) 76%, rgba(8,6,5,0.92) 100%)",
         }}
       />
     </div>

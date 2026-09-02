@@ -78,7 +78,7 @@ export default function UsernameField({ userId, username, onSaved }: Props) {
   const verdict = () => {
     switch (check.kind) {
       case "checking":
-        return <span className="text-muted">Checking…</span>;
+        return <span style={{ color: "var(--sepia-soft)" }}>Checking…</span>;
       case "free":
         return (
           <span className="text-hit">
@@ -88,9 +88,9 @@ export default function UsernameField({ userId, username, onSaved }: Props) {
       case "taken":
         return <span className="text-miss">{trimmed} is taken.</span>;
       case "invalid":
-        return <span className="text-muted">{check.why}</span>;
+        return <span style={{ color: "var(--sepia-soft)" }}>{check.why}</span>;
       case "unreachable":
-        return <span className="text-muted">Couldn't check just now.</span>;
+        return <span style={{ color: "var(--sepia-soft)" }}>Couldn't check just now.</span>;
       default:
         return null;
     }
@@ -98,7 +98,7 @@ export default function UsernameField({ userId, username, onSaved }: Props) {
 
   return (
     <div>
-      <label htmlFor="username" className="text-[15px] text-muted">
+      <label htmlFor="username" className="ledger" style={{ color: "var(--sepia-soft)" }}>
         Your name on the leaderboard
       </label>
 
@@ -139,7 +139,7 @@ export default function UsernameField({ userId, username, onSaved }: Props) {
       </p>
 
       {isDefaultUsername(username) && check.kind === "idle" && !saved && (
-        <p className="text-[14px] text-muted">
+        <p className="text-[14px]" style={{ color: "var(--sepia-soft)" }}>
           You're using the name we generated. Pick your own so people know you.
         </p>
       )}

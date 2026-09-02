@@ -12,8 +12,8 @@ const COPY: Record<Exclude<SyncState, "hidden">, string> = {
 };
 
 const TONE: Record<Exclude<SyncState, "hidden">, string> = {
-  offline: "var(--gold)",
-  pending: "var(--gold)",
+  offline: "var(--brass)",
+  pending: "var(--brass)",
   syncing: "var(--muted)",
   synced: "var(--hit)",
   failed: "var(--muted)",
@@ -40,15 +40,13 @@ export default function SyncStatus({ state }: { state: SyncState }) {
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: 12 }}
             transition={{ duration: reduce ? 0 : 0.22, ease: "easeOut" }}
-            className={`max-w-[520px] rounded-full border border-edge px-4 py-2.5 text-center text-[13px] leading-snug ${
+            className={`max-w-[520px] border border-edge px-4 py-2.5 text-center text-[13px] leading-snug ${
               state === "offline" && !reduce ? "breathe" : ""
             }`}
             style={{
               color: TONE[state],
-              background: "color-mix(in srgb, var(--raise) 80%, transparent)",
-              backdropFilter: "blur(14px) saturate(140%)",
-              WebkitBackdropFilter: "blur(14px) saturate(140%)",
-              boxShadow: "0 18px 40px -20px rgba(0,0,0,0.9)",
+              background: "var(--raise)",
+              boxShadow: "0 14px 30px -18px rgba(0,0,0,0.95)",
             }}
           >
             {COPY[state]}

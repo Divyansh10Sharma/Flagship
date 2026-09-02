@@ -1,39 +1,48 @@
 @import "tailwindcss";
 
+/* Pirate voyage. Warm night on deck, with the information surfaces rendered as
+   pages torn from a captain's log — parchment with iron-gall ink. The colour
+   inversion between the two is the whole idea: the flag lives in the dark, the
+   record of it lives on paper. No gradients-as-decoration, no glass. */
 @theme {
-  /* Deep, blue-leaning dark. The old flat slate read as grey against the
-     gradient field, so everything shifted a few degrees toward indigo. */
-  --color-void: #05060b;
-  --color-slate: #0a0d18;
-  --color-raise: #121729;
-  --color-edge: #232a44;
-  --color-chalk: #eef1f8;
-  --color-muted: #8e97b4;
-  --color-hit: #3ddc97;
-  --color-miss: #ff5d6c;
-  --color-gold: #f7c948;
-  --color-iris: #7c6bf5;
-  --color-azure: #4a8cff;
+  --color-void: #0a0806;
+  --color-slate: #0a0806;
+  --color-hull: #14100b;
+  --color-raise: #1e1710;
+  --color-edge: #3a2e20;
+  --color-chalk: #ede4d2;
+  --color-muted: #9c8b72;
+  --color-parch: #e7dcc3;
+  --color-sepia: #2a2015;
+  --color-brass: #c9922b;
+  --color-gold: #c9922b;
+  --color-hit: #4e8c5a;
+  --color-miss: #9b2f22;
+  --color-sea: #2f5d62;
 
   --font-sans: "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     sans-serif;
+  --font-fell: "IM Fell English", Georgia, "Times New Roman", serif;
 }
 
 :root {
-  --void: #05060b;
-  --slate: #0a0d18;
-  --raise: #121729;
-  --edge: #232a44;
-  --chalk: #eef1f8;
-  --muted: #8e97b4;
-  --hit: #3ddc97;
-  --miss: #ff5d6c;
-  --gold: #f7c948;
-  --iris: #7c6bf5;
-  --azure: #4a8cff;
+  --void: #0a0806;
+  --hull: #14100b;
+  --raise: #1e1710;
+  --edge: #3a2e20;
+  --chalk: #ede4d2;
+  --muted: #9c8b72;
+  --parch: #e7dcc3;
+  --parch-2: #d8c9a8;
+  --sepia: #2a2015;
+  --sepia-soft: #5c4a35;
+  --brass: #c9922b;
+  --gold: #c9922b;
+  --hit: #4e8c5a;
+  --miss: #9b2f22;
+  --sea: #2f5d62;
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   color-scheme: dark;
 }
 
@@ -51,7 +60,6 @@
     font-family: "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
       sans-serif;
     font-size: 16px;
-    font-weight: 400;
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
     overflow-x: hidden;
@@ -62,14 +70,12 @@
     color: inherit;
   }
 
-  /* Tailwind v4's preflight dropped v3's cursor: pointer on buttons, so
-     everything clickable reads as dead text on desktop. Put it back. */
+  /* Tailwind v4's preflight dropped v3's cursor: pointer on buttons. */
   button:not(:disabled),
   [role="button"]:not(:disabled),
   [role="tab"]:not(:disabled) {
     cursor: pointer;
   }
-
   button:disabled {
     cursor: not-allowed;
   }
@@ -79,114 +85,167 @@
   }
 
   *:focus-visible {
-    outline: 2px solid var(--iris);
+    outline: 2px solid var(--brass);
     outline-offset: 2px;
   }
 }
 
-/* ------------------------------------------------------------- components -- */
 @layer components {
-  /* One glass recipe, used by every raised surface so they read as one system. */
-  .surface {
-    background: color-mix(in srgb, var(--raise) 72%, transparent);
-    backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
-    border: 1px solid color-mix(in srgb, var(--edge) 90%, transparent);
-    border-radius: 16px;
-  }
-
-  /* A 1px gradient hairline along the top edge — catches the eye the way a
-     real bevel does, without a drop shadow. */
-  .surface-lit {
+  /* A page from the log. Paper colour, ink text, deckled by a soft edge mask. */
+  .parchment {
     position: relative;
+    color: var(--sepia);
+    background-color: var(--parch);
+    /* real scanned paper, with the soft staining layered over it */
+    background-image:
+      radial-gradient(60% 40% at 15% 10%, rgba(120, 95, 55, 0.12), transparent 70%),
+      radial-gradient(50% 45% at 88% 82%, rgba(120, 95, 55, 0.14), transparent 70%),
+      url("/parchment.webp");
+    background-size: auto, auto, 320px 320px;
+    background-blend-mode: multiply, multiply, normal;
+    border-radius: 2px;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.35) inset,
+      0 18px 36px -22px rgba(0, 0, 0, 0.95);
   }
-  .surface-lit::before {
+  /* a hairline of ink along the top edge, as if the page were pressed */
+  .parchment::before {
     content: "";
     position: absolute;
     inset: 0 0 auto 0;
     height: 1px;
-    border-radius: inherit;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      color-mix(in srgb, var(--iris) 60%, transparent),
-      color-mix(in srgb, var(--azure) 40%, transparent),
-      transparent
-    );
+    background: rgba(90, 70, 45, 0.25);
     pointer-events: none;
+  }
+  .parchment > * {
+    position: relative;
+  }
+
+  /* Ship's timber. Used where the surface should feel like part of the deck. */
+  .plank {
+    background-color: var(--raise);
+    background-image:
+      repeating-linear-gradient(
+        90deg,
+        rgba(0, 0, 0, 0.16) 0 1px,
+        transparent 1px 7px
+      ),
+      linear-gradient(180deg, rgba(255, 220, 170, 0.05), transparent 60%);
+    border: 1px solid var(--edge);
+    border-radius: 2px;
+  }
+
+  /* Twisted hemp. A repeating diagonal is a surprisingly good rope. */
+  .rope {
+    height: 7px;
+    border-radius: 4px;
+    background-image: repeating-linear-gradient(
+      58deg,
+      #b8822a 0 3px,
+      #8a5f1d 3px 5px,
+      #6d4a16 5px 7px
+    );
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
   }
 
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
+    border-radius: 3px;
     font-size: 15px;
     line-height: 1;
     transition:
-      transform 180ms var(--ease-out-soft),
-      background-color 180ms ease,
-      border-color 180ms ease,
-      box-shadow 220ms ease,
-      opacity 180ms ease;
-    will-change: transform;
+      background-color 160ms ease,
+      border-color 160ms ease,
+      color 160ms ease,
+      transform 160ms var(--ease-out-soft),
+      opacity 160ms ease;
   }
   .btn:active:not(:disabled) {
-    transform: scale(0.975);
+    transform: translateY(1px);
   }
   .btn:disabled {
-    opacity: 0.4;
+    opacity: 0.35;
   }
 
+  /* Struck brass plate, the kind screwed to a ship's fitting. */
   .btn-primary {
-    color: var(--void);
-    background-image: linear-gradient(135deg, #ffffff 0%, #dfe4f5 100%);
-    border: 1px solid transparent;
-    font-weight: 500;
+    font-family: var(--font-fell);
+    font-size: 19px;
+    letter-spacing: 0.03em;
+    color: #2b1d08;
+    background-color: #c9922b;
+    background-image: linear-gradient(
+      180deg,
+      rgba(255, 235, 180, 0.55) 0%,
+      rgba(255, 235, 180, 0) 42%,
+      rgba(70, 44, 8, 0.25) 100%
+    );
+    border: 1px solid #6d4a16;
+    box-shadow: 0 1px 0 rgba(255, 240, 200, 0.5) inset;
   }
   .btn-primary:hover:not(:disabled) {
-    box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--iris) 45%, transparent),
-      0 8px 30px -8px color-mix(in srgb, var(--iris) 70%, transparent);
+    background-color: #dda63a;
   }
 
   .btn-accent {
-    color: var(--chalk);
-    background-image: linear-gradient(135deg, var(--iris) 0%, var(--azure) 100%);
-    border: 1px solid transparent;
-    font-weight: 500;
+    font-family: var(--font-fell);
+    font-size: 18px;
+    color: var(--parch);
+    background-color: #8c2f23;
+    border: 1px solid #55190f;
+    box-shadow: 0 1px 0 rgba(255, 200, 180, 0.22) inset;
   }
   .btn-accent:hover:not(:disabled) {
-    box-shadow: 0 10px 34px -10px color-mix(in srgb, var(--iris) 85%, transparent);
+    background-color: #a3392b;
   }
 
   .btn-ghost {
     color: var(--chalk);
-    background: color-mix(in srgb, var(--raise) 55%, transparent);
+    background: transparent;
     border: 1px solid var(--edge);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
   }
   .btn-ghost:hover:not(:disabled) {
-    border-color: color-mix(in srgb, var(--iris) 55%, var(--edge));
-    background: color-mix(in srgb, var(--raise) 80%, transparent);
+    border-color: var(--brass);
+    color: var(--brass);
+  }
+
+  /* Buttons sitting on parchment need ink, not chalk. */
+  .parchment .btn-ghost {
+    color: var(--sepia);
+    border-color: rgba(90, 70, 45, 0.45);
+  }
+  .parchment .btn-ghost:hover:not(:disabled) {
+    border-color: #6d4a16;
+    color: #6d4a16;
   }
 
   .field {
-    background: color-mix(in srgb, var(--void) 65%, transparent);
+    background: rgba(10, 8, 6, 0.6);
     border: 1px solid var(--edge);
-    border-radius: 12px;
+    border-radius: 2px;
     color: var(--chalk);
-    transition: border-color 180ms ease, box-shadow 180ms ease;
+    transition: border-color 160ms ease;
   }
   .field:focus {
     outline: none;
-    border-color: color-mix(in srgb, var(--iris) 70%, var(--edge));
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--iris) 18%, transparent);
+    border-color: var(--brass);
+  }
+  .parchment .field {
+    background: rgba(255, 252, 244, 0.6);
+    border-color: rgba(90, 70, 45, 0.4);
+    color: var(--sepia);
   }
 }
 
-/* ----------------------------------------------------------------- type ---- */
+/* ------------------------------------------------------------------ type -- */
+.fell {
+  font-family: var(--font-fell);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
 .expanded {
   font-stretch: 125%;
   font-variation-settings: "wdth" 125;
@@ -198,54 +257,44 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Gradient text for the big display numbers. */
-.ink-gradient {
-  background-image: linear-gradient(135deg, var(--chalk) 0%, var(--iris) 130%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+/* Ledger heading: small, spaced, the way a log book column is titled. */
+.ledger {
+  font-family: var(--font-fell);
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
 }
 
 .no-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 .no-scrollbar::-webkit-scrollbar-thumb {
   background: var(--edge);
-  border-radius: 3px;
 }
 .no-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* --------------------------------------------------------------- motion ---- */
-@keyframes drift-a {
-  0%, 100% { transform: translate3d(-8%, -6%, 0) scale(1); }
-  33%      { transform: translate3d(6%, 4%, 0) scale(1.12); }
-  66%      { transform: translate3d(-4%, 8%, 0) scale(0.94); }
-}
-@keyframes drift-b {
-  0%, 100% { transform: translate3d(6%, 8%, 0) scale(1.05); }
-  40%      { transform: translate3d(-7%, -5%, 0) scale(0.92); }
-  70%      { transform: translate3d(4%, -8%, 0) scale(1.1); }
-}
-@keyframes drift-c {
-  0%, 100% { transform: translate3d(0, 4%, 0) scale(0.95); }
-  50%      { transform: translate3d(-6%, -6%, 0) scale(1.15); }
-}
-
-@keyframes wave-slide {
+/* ---------------------------------------------------------------- motion -- */
+@keyframes swell {
   from { transform: translate3d(0, 0, 0); }
   to   { transform: translate3d(-50%, 0, 0); }
 }
 
-@keyframes shimmer {
-  from { background-position: -220% 0; }
-  to   { background-position: 220% 0; }
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-0.5deg); }
+  50%      { transform: translateY(-7px) rotate(0.5deg); }
 }
 
-@keyframes float-soft {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
+@keyframes lantern {
+  0%, 100% { opacity: 0.5; }
+  45%      { opacity: 0.78; }
+  60%      { opacity: 0.6; }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.25; }
+  50%      { opacity: 0.85; }
 }
 
 @keyframes shake {
@@ -265,34 +314,13 @@
 
 @keyframes breathe {
   0%, 100% { border-color: var(--edge); }
-  50% { border-color: var(--gold); }
+  50% { border-color: var(--brass); }
 }
 .breathe { animation: breathe 2s ease-in-out infinite; }
 
-.float-soft { animation: float-soft 6s ease-in-out infinite; }
+.bob { animation: bob 7s ease-in-out infinite; }
 
-/* Sweeps once across a surface — used on the primary CTA. */
-.sheen {
-  position: relative;
-  overflow: hidden;
-}
-.sheen::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    100deg,
-    transparent 35%,
-    color-mix(in srgb, #ffffff 45%, transparent) 50%,
-    transparent 65%
-  );
-  background-size: 220% 100%;
-  animation: shimmer 5.5s ease-in-out infinite;
-  pointer-events: none;
-  opacity: 0.5;
-}
-
-/* -------------------------------------------------------------- cursor ----- */
+/* --------------------------------------------------------------- cursor --- */
 .cursor-dot,
 .cursor-ring {
   position: fixed;
@@ -304,28 +332,26 @@
   will-change: transform;
 }
 .cursor-dot {
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -3px;
-  background: var(--chalk);
+  width: 5px;
+  height: 5px;
+  margin: -2.5px 0 0 -2.5px;
+  background: var(--brass);
 }
 .cursor-ring {
-  width: 34px;
-  height: 34px;
-  margin: -17px 0 0 -17px;
-  border: 1px solid color-mix(in srgb, var(--iris) 75%, transparent);
+  width: 28px;
+  height: 28px;
+  margin: -14px 0 0 -14px;
+  border: 1px solid rgba(201, 146, 43, 0.55);
   transition: width 200ms var(--ease-out-soft), height 200ms var(--ease-out-soft),
-    margin 200ms var(--ease-out-soft), background-color 200ms ease,
-    border-color 200ms ease;
+    margin 200ms var(--ease-out-soft), border-color 200ms ease, opacity 160ms ease;
 }
 .cursor-ring[data-hot="true"] {
-  width: 52px;
-  height: 52px;
-  margin: -26px 0 0 -26px;
-  background: color-mix(in srgb, var(--iris) 14%, transparent);
-  border-color: color-mix(in srgb, var(--azure) 85%, transparent);
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  border-color: var(--brass);
+  border-style: dashed;
 }
-/* Only where a real pointer exists. */
 @media (hover: none), (pointer: coarse) {
   .cursor-dot,
   .cursor-ring { display: none !important; }
@@ -341,11 +367,7 @@
   }
   .shake,
   .breathe,
-  .float-soft,
-  .sheen::after {
-    animation: none !important;
-  }
-  .sheen::after { display: none; }
+  .bob { animation: none !important; }
   .cursor-dot,
   .cursor-ring { display: none !important; }
 }
