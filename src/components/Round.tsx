@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import CountryPicker from "./CountryPicker";
 import FlagCard from "./FlagCard";
 import Reveal from "./Reveal";
+import Pennant from "./Pennant";
 import { MAX_ATTEMPTS } from "../lib/scoring";
 import { useIsDesktop } from "../hooks/useMediaQuery";
 import type { Country, RoundResult } from "../lib/types";
@@ -86,11 +87,12 @@ export default function Round({
         {revealed && (
           <motion.div
             key="flood"
-            initial={reduce ? { opacity: 0.45 } : { opacity: 0 }}
-            animate={{ opacity: 0.45 }}
+            initial={reduce ? { opacity: 0.28 } : { opacity: 0 }}
+            animate={{ opacity: 0.28 }}
             exit={{ opacity: 0 }}
             transition={{ duration: reduce ? 0 : 0.5 }}
             className="pointer-events-none fixed inset-0 -z-10 overflow-hidden"
+            data-flood="true"
             aria-hidden="true"
           >
             <img
@@ -105,11 +107,8 @@ export default function Round({
 
       <div className="flex items-center justify-between gap-4">
         <span
-          className="tabular rounded-full px-3 py-1 text-[13px] tracking-wide text-muted"
-          style={{
-            background: "color-mix(in srgb, var(--raise) 60%, transparent)",
-            border: "1px solid color-mix(in srgb, var(--edge) 80%, transparent)",
-          }}
+          className="ledger tabular"
+          style={{ color: "var(--muted)" }}
         >
           Flag {roundIndex + 1} of {total}
         </span>
@@ -125,23 +124,12 @@ export default function Round({
                 key={i}
                 data-dot="true"
                 data-spent={spent}
-                animate={reduce ? {} : { scale: spent ? [1, 1.35, 1] : 1 }}
-                transition={{ duration: 0.34, ease: [0.34, 1.56, 0.64, 1] }}
-                className="h-2.5 rounded-full"
-                style={{
-                  width: spent ? 22 : 10,
-                  background: spent
-                    ? "linear-gradient(135deg, var(--miss), #ff8a94)"
-                    : "transparent",
-                  border: `1px solid ${spent ? "transparent" : "var(--edge)"}`,
-                  boxShadow: spent
-                    ? "0 0 14px -2px color-mix(in srgb, var(--miss) 70%, transparent)"
-                    : "none",
-                  transition: reduce
-                    ? "none"
-                    : "width 260ms cubic-bezier(0.22,1,0.36,1), background 220ms, box-shadow 220ms",
-                }}
-              />
+                animate={reduce ? {} : { y: spent ? [0, -4, 0] : 0 }}
+                transition={{ duration: 0.32, ease: [0.34, 1.56, 0.64, 1] }}
+                className="inline-flex"
+              >
+                <Pennant spent={spent} />
+              </motion.span>
             );
           })}
         </div>
@@ -198,10 +186,11 @@ export default function Round({
                   initial={reduce ? false : { opacity: 0, x: -6 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                  className="flex items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-[15px] text-muted"
+                  className="fell px-3 py-2.5 text-[17px]"
                   style={{
-                    background: "color-mix(in srgb, var(--raise) 45%, transparent)",
-                    borderLeft: "2px solid color-mix(in srgb, var(--iris) 70%, transparent)",
+                    background: "var(--hull)",
+                    borderLeft: "3px solid var(--brass)",
+                    color: "var(--chalk)",
                   }}
                 >
                   {h}

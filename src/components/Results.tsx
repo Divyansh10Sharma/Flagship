@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "motion/react";
+import WaxSeal from "./WaxSeal";
 import { BY_CODE } from "../lib/countries";
 import { factFor } from "../lib/facts";
 import type { DayResult } from "../lib/types";
@@ -41,28 +42,22 @@ export default function Results({ day, streak, isGuest, onSignIn, onHome, onLead
 
   return (
     <div className="pt-2">
-      <p className="text-[15px] text-muted">
+      <p className="ledger" style={{ color: "var(--muted)" }}>
         {solved} of {day.rounds.length} flags today
       </p>
 
       <p
-        className="expanded tabular mt-2 text-[68px] leading-none sm:text-[84px]"
-        style={{
-          backgroundImage:
-            "linear-gradient(135deg, var(--gold) 0%, #ffb347 55%, var(--iris) 130%)",
-          WebkitBackgroundClip: "text",
-          backgroundClip: "text",
-          color: "transparent",
-        }}
+        className="fell tabular mt-2 text-[76px] leading-none sm:text-[92px]"
+        style={{ color: "var(--brass)" }}
       >
         {shown}
       </p>
 
-      <p className="tabular mt-3 text-[16px] text-muted">
+      <p className="fell tabular mt-2 text-[19px]" style={{ color: "var(--muted)" }}>
         {day.base} &times; {day.multiplier} = {day.final}
       </p>
 
-      <p className="mt-1 text-[16px] text-muted">
+      <p className="fell mt-1 text-[18px]" style={{ color: "var(--muted)" }}>
         {streak > 0
           ? `${streak} day streak.`
           : "Play tomorrow to start a streak."}
@@ -78,28 +73,26 @@ export default function Results({ day, streak, isGuest, onSignIn, onHome, onLead
               initial={reduce ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: reduce ? 0 : 0.35 + i * 0.06 }}
-              className="surface surface-lit flex gap-4 p-4"
+              className="parchment flex gap-4 p-4"
             >
               <img
                 src={c.flagSvg}
                 alt={`Flag of ${c.name}`}
                 draggable={false}
-                className="h-12 w-[72px] shrink-0 rounded-[6px] object-contain"
-                style={{
-                  border: "1px solid color-mix(in srgb, var(--edge) 85%, transparent)",
-                  boxShadow: "0 10px 24px -14px rgba(0,0,0,0.9)",
-                }}
+                className="h-12 w-[72px] shrink-0 object-contain"
+                style={{ filter: "drop-shadow(0 2px 5px rgba(60,44,20,0.45))" }}
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline justify-between gap-3">
-                  <span className="text-[17px] font-medium text-chalk">{c.name}</span>
+                  <span className="fell text-[21px]" style={{ color: "var(--sepia)" }}>{c.name}</span>
                   <span
-                    className={`tabular shrink-0 text-[15px] ${r.solved ? "text-gold" : "text-muted"}`}
+                    className="fell tabular shrink-0 text-[19px]"
+                    style={{ color: r.solved ? "#8a5f1d" : "rgba(90,70,45,0.7)" }}
                   >
                     {r.points}
                   </span>
                 </div>
-                <p className="mt-1 text-[14px] leading-snug text-muted">{factFor(c)}</p>
+                <p className="mt-1 text-[14px] leading-snug" style={{ color: "var(--sepia-soft)" }}>{factFor(c)}</p>
               </div>
             </motion.div>
           );
@@ -107,8 +100,10 @@ export default function Results({ day, streak, isGuest, onSignIn, onHome, onLead
       </div>
 
       {isGuest && (
-        <div className="surface surface-lit mt-6 p-5">
-          <p className="text-[15px] leading-relaxed text-muted">
+        <div className="parchment mt-6 flex gap-4 p-5">
+          <WaxSeal size={46} label="F" />
+          <div className="min-w-0 flex-1">
+          <p className="fell text-[17px] leading-relaxed" style={{ color: "var(--sepia)" }}>
             Your streak is saved on this device. Sign in and it follows you
             everywhere.
           </p>
@@ -127,6 +122,7 @@ export default function Results({ day, streak, isGuest, onSignIn, onHome, onLead
             >
               Create account
             </button>
+          </div>
           </div>
         </div>
       )}

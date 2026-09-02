@@ -17,7 +17,7 @@ export default function FlagCard({
 }: Props) {
   return (
     <div
-      className={`relative flex justify-center ${shaking ? "shake" : ""} ${className}`}
+      className={`relative w-full ${shaking ? "shake" : ""} ${className}`}
       style={{
         transform: shrunk ? "scale(0.6)" : "scale(1)",
         transformOrigin: "top center",
@@ -28,7 +28,7 @@ export default function FlagCard({
         src={src}
         alt=""
         aria-hidden="true"
-        className="pointer-events-none absolute h-[180px] w-auto max-w-full object-contain opacity-45 sm:h-[220px]"
+        className="pointer-events-none absolute inset-0 h-[180px] w-full object-contain opacity-45 sm:h-[220px]"
         style={{ filter: "blur(38px) saturate(170%)", transform: "scale(1.15)" }}
       />
       <img
@@ -36,11 +36,8 @@ export default function FlagCard({
         alt={alt}
         data-flag="true"
         draggable={false}
-        className="relative h-[180px] w-auto max-w-full rounded-[8px] object-contain sm:h-[220px]"
-        style={{
-          border: "1px solid color-mix(in srgb, var(--edge) 85%, transparent)",
-          boxShadow: "0 26px 60px -28px rgba(0,0,0,0.85)",
-        }}
+        className="relative h-[180px] w-full object-contain sm:h-[220px]"
+        style={{ filter: "drop-shadow(0 24px 50px rgba(0,0,0,0.9))" }}
       />
     </div>
   );

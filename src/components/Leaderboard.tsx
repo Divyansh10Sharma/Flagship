@@ -40,9 +40,10 @@ export default function Leaderboard({ today, userId, onHome }: Props) {
 
   return (
     <div className="pt-2">
-      <h2 className="expanded ink-gradient text-[32px] leading-none sm:text-[40px]">
-        Leaderboard
+      <h2 className="fell text-[40px] leading-none text-chalk sm:text-[48px]">
+        Crew roster
       </h2>
+      <div className="rope mt-4" />
 
       <div className="mt-5 flex gap-2" role="tablist" aria-label="Leaderboard">
         {TABS.map((t) => (
@@ -61,17 +62,18 @@ export default function Leaderboard({ today, userId, onHome }: Props) {
       </div>
 
       <div className="mt-6">
-        {state === "loading" && <p className="text-[15px] text-muted">Loading…</p>}
+        {state === "loading" && (
+          <p className="fell text-[18px]" style={{ color: "var(--muted)" }}>Reading the roster…</p>
+        )}
 
         {state === "unreachable" && (
-          <p className="text-[15px] leading-relaxed text-muted">
-            Can't reach the leaderboard right now. Your own scores are safe on this
-            device.
+          <p className="fell text-[18px] leading-relaxed" style={{ color: "var(--muted)" }}>
+            Can't reach the roster right now. Your own scores are safe on this device.
           </p>
         )}
 
         {state === "ready" && rows && rows.length === 0 && (
-          <p className="text-[15px] text-muted">
+          <p className="fell text-[18px]" style={{ color: "var(--muted)" }}>
             {board === "today"
               ? "Nobody has finished today yet. Be first."
               : "No scores here yet."}
@@ -88,61 +90,46 @@ export default function Leaderboard({ today, userId, onHome }: Props) {
                   initial={reduce ? false : { opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.24, delay: reduce ? 0 : Math.min(i, 12) * 0.02 }}
-                  className="surface flex items-center gap-3 p-3.5"
+                  className="parchment flex items-center gap-3 p-3.5"
                   style={
                     me
-                      ? {
-                          borderColor:
-                            "color-mix(in srgb, var(--gold) 55%, transparent)",
-                          boxShadow:
-                            "0 0 30px -12px color-mix(in srgb, var(--gold) 60%, transparent)",
-                        }
+                      ? { boxShadow: "0 0 0 2px var(--brass), 0 18px 36px -22px rgba(0,0,0,0.95)" }
                       : undefined
                   }
                 >
                   <span
-                    className="tabular flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[14px]"
+                    className="fell tabular flex h-9 w-9 shrink-0 items-center justify-center text-[17px]"
                     style={
                       i < 3
                         ? {
-                            color: "var(--void)",
-                            fontWeight: 600,
-                            backgroundImage:
-                              i === 0
-                                ? "linear-gradient(135deg, #F7C948, #FFB347)"
-                                : i === 1
-                                  ? "linear-gradient(135deg, #D7DEF0, #9AA6C4)"
-                                  : "linear-gradient(135deg, #C98B5B, #A96A3C)",
+                            color: "#2b1d08",
+                            background:
+                              i === 0 ? "#C9922B" : i === 1 ? "#B9AE97" : "#A9754A",
+                            border: "1px solid rgba(60,44,20,0.5)",
                           }
                         : {
-                            color: "var(--muted)",
-                            background:
-                              "color-mix(in srgb, var(--raise) 70%, transparent)",
-                            border:
-                              "1px solid color-mix(in srgb, var(--edge) 80%, transparent)",
+                            color: "var(--sepia-soft)",
+                            border: "1px solid rgba(90,70,45,0.35)",
                           }
                     }
                   >
                     {i + 1}
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[16px] text-chalk">
+                    <p className="fell truncate text-[20px]" style={{ color: "var(--sepia)" }}>
                       {r.username}
                       {me && (
                         <span
-                          className="ml-2 rounded-full px-2 py-0.5 text-[11px] uppercase tracking-wider text-gold"
-                          style={{
-                            background:
-                              "color-mix(in srgb, var(--gold) 14%, transparent)",
-                          }}
+                          className="ledger ml-2"
+                          style={{ color: "#8a5f1d" }}
                         >
                           you
                         </span>
                       )}
                     </p>
-                    <p className="text-[13px] text-muted">{r.sub}</p>
+                    <p className="text-[13px]" style={{ color: "var(--sepia-soft)" }}>{r.sub}</p>
                   </div>
-                  <span className="tabular shrink-0 text-[18px] text-gold">{r.score}</span>
+                  <span className="fell tabular shrink-0 text-[24px]" style={{ color: "#8a5f1d" }}>{r.score}</span>
                 </motion.li>
               );
             })}
