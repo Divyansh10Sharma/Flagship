@@ -257,6 +257,17 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Same ledger treatment, but in Archivo — IM Fell's old-style figures turn
+   "Flag 1 of 3" into "Flag ₁ of ₃". Any label carrying a number uses this. */
+.ledger-num {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
 /* Ledger heading: small, spaced, the way a log book column is titled. */
 .ledger {
   font-family: var(--font-fell);

@@ -77,8 +77,7 @@ export default function Round({
   const hints = hintsFor(country, misses);
   // Nothing between here and the picker may carry a transform: a transformed
   // ancestor becomes the containing block for the sheet's position: fixed and
-  // drags it off the viewport. The flag shrinking is what keeps it in view.
-  const shrink = pickerOpen && !isDesktop;
+  // drags it off the viewport.
 
   return (
     <div className="relative pt-2">
@@ -107,7 +106,7 @@ export default function Round({
 
       <div className="flex items-center justify-between gap-4">
         <span
-          className="ledger tabular"
+          className="ledger-num"
           style={{ color: "var(--muted)" }}
         >
           Flag {roundIndex + 1} of {total}
@@ -150,7 +149,6 @@ export default function Round({
           <FlagCard
             src={country.flagSvg}
             alt={revealed ? `Flag of ${country.name}` : "Guess this flag"}
-            shrunk={shrink}
             shaking={shaking}
           />
 

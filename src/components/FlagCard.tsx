@@ -1,28 +1,16 @@
 type Props = {
   src: string;
   alt: string;
-  shrunk?: boolean;
   shaking?: boolean;
   className?: string;
 };
 
 /** Fixed-height box + object-contain keeps the column from jumping between a
  *  1:2 flag and a square one. The bloom behind it is the flag's own colour. */
-export default function FlagCard({
-  src,
-  alt,
-  shrunk = false,
-  shaking = false,
-  className = "",
-}: Props) {
+export default function FlagCard({ src, alt, shaking = false, className = "" }: Props) {
   return (
     <div
       className={`relative w-full ${shaking ? "shake" : ""} ${className}`}
-      style={{
-        transform: shrunk ? "scale(0.6)" : "scale(1)",
-        transformOrigin: "top center",
-        transition: "transform 200ms cubic-bezier(0.22, 1, 0.36, 1)",
-      }}
     >
       <img
         src={src}
