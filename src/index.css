@@ -1,0 +1,131 @@
+@import "tailwindcss";
+
+@theme {
+  --color-slate: #141821;
+  --color-raise: #1e2430;
+  --color-edge: #2c3444;
+  --color-chalk: #edeff3;
+  --color-muted: #8a93a6;
+  --color-hit: #35d07f;
+  --color-miss: #f04e56;
+  --color-gold: #f5c542;
+
+  --font-sans: "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    sans-serif;
+
+  --radius-card: 14px;
+  --radius-btn: 10px;
+  --radius-flag: 6px;
+}
+
+:root {
+  --slate: #141821;
+  --raise: #1e2430;
+  --edge: #2c3444;
+  --chalk: #edeff3;
+  --muted: #8a93a6;
+  --hit: #35d07f;
+  --miss: #f04e56;
+  --gold: #f5c542;
+  color-scheme: dark;
+}
+
+/* These live in @layer base on purpose. Unlayered element rules would beat
+   every Tailwind utility — v4 puts utilities in a layer, and unlayered CSS
+   always wins — which silently kills text-slate, font-medium and friends. */
+@layer base {
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--slate);
+    color: var(--chalk);
+    font-family: "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+      sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overflow-x: hidden;
+  }
+
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  input {
+    font: inherit;
+  }
+
+  *:focus-visible {
+    outline: 2px solid var(--chalk);
+    outline-offset: 2px;
+  }
+}
+
+/* Archivo Expanded — the display treatment. */
+.expanded {
+  font-stretch: 125%;
+  font-variation-settings: "wdth" 125;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.no-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--edge);
+  border-radius: 3px;
+}
+.no-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-10px); }
+  30% { transform: translateX(9px); }
+  45% { transform: translateX(-7px); }
+  60% { transform: translateX(5px); }
+  75% { transform: translateX(-3px); }
+}
+.shake {
+  animation: shake 300ms ease-in-out;
+}
+
+@keyframes dotpulse {
+  0%, 100% { opacity: 0.25; }
+  50% { opacity: 1; }
+}
+
+@keyframes breathe {
+  0%, 100% { border-color: var(--edge); }
+  50% { border-color: var(--gold); }
+}
+.breathe {
+  animation: breathe 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .shake,
+  .breathe {
+    animation: none !important;
+  }
+}
