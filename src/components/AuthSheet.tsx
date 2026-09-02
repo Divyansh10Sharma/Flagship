@@ -119,7 +119,7 @@ export default function AuthSheet({
             transition={{ duration: 0.2 }}
             onClick={onClose}
             className="fixed inset-0 z-50"
-            style={{ background: "rgba(5,6,11,0.7)", backdropFilter: "blur(6px)" }}
+            style={{ background: "rgba(4,8,15,0.82)" }}
           />
           <motion.div
             key="sheet"
@@ -131,7 +131,6 @@ export default function AuthSheet({
             exit={reduce ? { opacity: 1 } : { opacity: 0, y: 16 }}
             transition={{ duration: 0.24, ease: "easeOut" }}
             className="surface surface-lit fixed inset-x-4 top-1/2 z-50 mx-auto w-auto max-w-[440px] -translate-y-1/2 p-6 sm:inset-x-0"
-            style={{ boxShadow: "0 40px 90px -40px rgba(0,0,0,0.95)" }}
           >
             {email ? (
               <>
@@ -167,7 +166,7 @@ export default function AuthSheet({
               </>
             ) : (
               <form onSubmit={submit}>
-                <h2 className="expanded ink-gradient text-[26px] leading-none">
+                <h2 className="expanded text-[26px] leading-none">
                   {mode === "in" ? "Sign in" : "Create account"}
                 </h2>
                 <p className="mt-2 text-[15px] text-muted">

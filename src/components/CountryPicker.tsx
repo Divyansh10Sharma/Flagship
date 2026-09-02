@@ -177,9 +177,8 @@ export default function CountryPicker({
               style={
                 !out && i === active
                   ? {
-                      background:
-                        "linear-gradient(90deg, color-mix(in srgb, var(--iris) 22%, transparent), transparent 85%)",
-                      boxShadow: "inset 2px 0 0 0 var(--iris)",
+                      background: "var(--deep)",
+                      boxShadow: "inset 2px 0 0 0 var(--brass)",
                     }
                   : undefined
               }
@@ -242,8 +241,7 @@ export default function CountryPicker({
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? { opacity: 1 } : { opacity: 0, y: -4 }}
             transition={{ duration: 0.15 }}
-            className="surface surface-lit absolute left-0 right-0 top-[calc(100%+8px)] z-40 flex max-h-[340px] flex-col overflow-hidden"
-            style={{ boxShadow: "0 30px 70px -30px rgba(0,0,0,0.9)" }}
+            className="surface absolute left-0 right-0 top-[calc(100%+6px)] z-40 flex max-h-[340px] flex-col overflow-hidden"
           >
             {panelBody}
           </motion.div>
@@ -260,7 +258,7 @@ export default function CountryPicker({
               exit={reduce ? { opacity: 1 } : { opacity: 0 }}
               transition={{ duration: 0.2 }}
               className="fixed inset-0 z-30"
-              style={{ background: "rgba(5,6,11,0.45)", backdropFilter: "blur(2px)" }}
+              style={{ background: "rgba(4,8,15,0.72)" }}
               aria-hidden="true"
             />
             <motion.div
@@ -273,7 +271,7 @@ export default function CountryPicker({
                 ease: [0.22, 1, 0.36, 1],
                 duration: 0.28,
               }}
-              className="surface surface-lit fixed inset-x-0 bottom-0 z-40 flex h-[60svh] flex-col overflow-hidden rounded-b-none"
+              className="surface fixed inset-x-0 bottom-0 z-40 flex h-[60svh] flex-col overflow-hidden rounded-b-none"
               data-sheet="true"
               style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
             >

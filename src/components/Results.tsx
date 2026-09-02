@@ -41,19 +41,13 @@ export default function Results({ day, streak, isGuest, onSignIn, onHome, onLead
 
   return (
     <div className="pt-2">
-      <p className="text-[15px] text-muted">
+      <p className="label">
         {solved} of {day.rounds.length} flags today
       </p>
 
       <p
         className="expanded tabular mt-2 text-[68px] leading-none sm:text-[84px]"
-        style={{
-          backgroundImage:
-            "linear-gradient(135deg, var(--gold) 0%, #ffb347 55%, var(--iris) 130%)",
-          WebkitBackgroundClip: "text",
-          backgroundClip: "text",
-          color: "transparent",
-        }}
+        style={{ color: "var(--brass)" }}
       >
         {shown}
       </p>
@@ -85,10 +79,7 @@ export default function Results({ day, streak, isGuest, onSignIn, onHome, onLead
                 alt={`Flag of ${c.name}`}
                 draggable={false}
                 className="h-12 w-[72px] shrink-0 rounded-[6px] object-contain"
-                style={{
-                  border: "1px solid color-mix(in srgb, var(--edge) 85%, transparent)",
-                  boxShadow: "0 10px 24px -14px rgba(0,0,0,0.9)",
-                }}
+                style={{ border: "1px solid var(--edge)" }}
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline justify-between gap-3">

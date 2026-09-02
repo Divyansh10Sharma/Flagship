@@ -1,36 +1,41 @@
 @import "tailwindcss";
 
+/* Nautical chart, not a gradient mesh. Structure over blur: a graticule, rhumb
+   lines, hairlines and corner ticks. No glassmorphism, no purple, no gradient
+   headings — those three are what made the last pass read as generated. */
 @theme {
-  /* Deep, blue-leaning dark. The old flat slate read as grey against the
-     gradient field, so everything shifted a few degrees toward indigo. */
-  --color-void: #05060b;
-  --color-slate: #0a0d18;
-  --color-raise: #121729;
-  --color-edge: #232a44;
-  --color-chalk: #eef1f8;
-  --color-muted: #8e97b4;
-  --color-hit: #3ddc97;
-  --color-miss: #ff5d6c;
-  --color-gold: #f7c948;
-  --color-iris: #7c6bf5;
-  --color-azure: #4a8cff;
+  --color-void: #04080f;
+  --color-slate: #050a12;
+  --color-deep: #091321;
+  --color-raise: #0d1826;
+  --color-edge: #1c3049;
+  --color-chalk: #e8edf4;
+  --color-muted: #7e8ca3;
+  --color-hit: #4fb57a;
+  --color-miss: #d9483b;
+  --color-gold: #c9a227;
+  --color-brass: #c9a227;
+  --color-sea: #3e8fa8;
+  --color-bone: #ded6c4;
 
   --font-sans: "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     sans-serif;
 }
 
 :root {
-  --void: #05060b;
-  --slate: #0a0d18;
-  --raise: #121729;
-  --edge: #232a44;
-  --chalk: #eef1f8;
-  --muted: #8e97b4;
-  --hit: #3ddc97;
-  --miss: #ff5d6c;
-  --gold: #f7c948;
-  --iris: #7c6bf5;
-  --azure: #4a8cff;
+  --void: #04080f;
+  --slate: #050a12;
+  --deep: #091321;
+  --raise: #0d1826;
+  --edge: #1c3049;
+  --chalk: #e8edf4;
+  --muted: #7e8ca3;
+  --hit: #4fb57a;
+  --miss: #d9483b;
+  --gold: #c9a227;
+  --brass: #c9a227;
+  --sea: #3e8fa8;
+  --bone: #ded6c4;
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -62,14 +67,12 @@
     color: inherit;
   }
 
-  /* Tailwind v4's preflight dropped v3's cursor: pointer on buttons, so
-     everything clickable reads as dead text on desktop. Put it back. */
+  /* Tailwind v4's preflight dropped v3's cursor: pointer on buttons. */
   button:not(:disabled),
   [role="button"]:not(:disabled),
   [role="tab"]:not(:disabled) {
     cursor: pointer;
   }
-
   button:disabled {
     cursor: not-allowed;
   }
@@ -79,114 +82,115 @@
   }
 
   *:focus-visible {
-    outline: 2px solid var(--iris);
-    outline-offset: 2px;
+    outline: 1px solid var(--brass);
+    outline-offset: 3px;
   }
 }
 
-/* ------------------------------------------------------------- components -- */
 @layer components {
-  /* One glass recipe, used by every raised surface so they read as one system. */
+  /* Flat panel with a hairline. Solid — nothing behind it shows through. */
   .surface {
-    background: color-mix(in srgb, var(--raise) 72%, transparent);
-    backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
-    border: 1px solid color-mix(in srgb, var(--edge) 90%, transparent);
-    border-radius: 16px;
+    background: var(--raise);
+    border: 1px solid var(--edge);
+    border-radius: 4px;
   }
 
-  /* A 1px gradient hairline along the top edge — catches the eye the way a
-     real bevel does, without a drop shadow. */
+  /* Corner ticks, the way a chart annotates a plotted box. */
   .surface-lit {
     position: relative;
   }
-  .surface-lit::before {
+  .surface-lit::before,
+  .surface-lit::after {
     content: "";
     position: absolute;
-    inset: 0 0 auto 0;
-    height: 1px;
-    border-radius: inherit;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      color-mix(in srgb, var(--iris) 60%, transparent),
-      color-mix(in srgb, var(--azure) 40%, transparent),
-      transparent
-    );
+    width: 7px;
+    height: 7px;
     pointer-events: none;
+    border-color: color-mix(in srgb, var(--brass) 70%, transparent);
+  }
+  .surface-lit::before {
+    top: -1px;
+    left: -1px;
+    border-top: 1px solid;
+    border-left: 1px solid;
+  }
+  .surface-lit::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
   }
 
   .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
+    border-radius: 3px;
     font-size: 15px;
     line-height: 1;
     transition:
-      transform 180ms var(--ease-out-soft),
-      background-color 180ms ease,
-      border-color 180ms ease,
-      box-shadow 220ms ease,
-      opacity 180ms ease;
-    will-change: transform;
-  }
-  .btn:active:not(:disabled) {
-    transform: scale(0.975);
+      background-color 140ms linear,
+      border-color 140ms linear,
+      color 140ms linear,
+      opacity 140ms linear;
   }
   .btn:disabled {
-    opacity: 0.4;
+    opacity: 0.35;
   }
 
+  /* Bone-white plate. Hard edges, no gradient, no glow. */
   .btn-primary {
     color: var(--void);
-    background-image: linear-gradient(135deg, #ffffff 0%, #dfe4f5 100%);
-    border: 1px solid transparent;
-    font-weight: 500;
+    background: var(--bone);
+    border: 1px solid var(--bone);
+    font-weight: 600;
+    letter-spacing: 0.02em;
   }
   .btn-primary:hover:not(:disabled) {
-    box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--iris) 45%, transparent),
-      0 8px 30px -8px color-mix(in srgb, var(--iris) 70%, transparent);
+    background: #f1ece0;
+    border-color: #f1ece0;
+  }
+  .btn-primary:active:not(:disabled) {
+    background: var(--brass);
+    border-color: var(--brass);
   }
 
   .btn-accent {
-    color: var(--chalk);
-    background-image: linear-gradient(135deg, var(--iris) 0%, var(--azure) 100%);
-    border: 1px solid transparent;
-    font-weight: 500;
+    color: var(--void);
+    background: var(--brass);
+    border: 1px solid var(--brass);
+    font-weight: 600;
+    letter-spacing: 0.02em;
   }
   .btn-accent:hover:not(:disabled) {
-    box-shadow: 0 10px 34px -10px color-mix(in srgb, var(--iris) 85%, transparent);
+    background: #dcb636;
+    border-color: #dcb636;
   }
 
   .btn-ghost {
     color: var(--chalk);
-    background: color-mix(in srgb, var(--raise) 55%, transparent);
+    background: transparent;
     border: 1px solid var(--edge);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
   }
   .btn-ghost:hover:not(:disabled) {
-    border-color: color-mix(in srgb, var(--iris) 55%, var(--edge));
-    background: color-mix(in srgb, var(--raise) 80%, transparent);
+    border-color: var(--brass);
+    color: var(--brass);
   }
 
   .field {
-    background: color-mix(in srgb, var(--void) 65%, transparent);
+    background: var(--void);
     border: 1px solid var(--edge);
-    border-radius: 12px;
+    border-radius: 3px;
     color: var(--chalk);
-    transition: border-color 180ms ease, box-shadow 180ms ease;
+    transition: border-color 140ms linear;
   }
   .field:focus {
     outline: none;
-    border-color: color-mix(in srgb, var(--iris) 70%, var(--edge));
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--iris) 18%, transparent);
+    border-color: var(--brass);
   }
 }
 
-/* ----------------------------------------------------------------- type ---- */
+/* ------------------------------------------------------------------ type -- */
 .expanded {
   font-stretch: 125%;
   font-variation-settings: "wdth" 125;
@@ -198,54 +202,60 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Gradient text for the big display numbers. */
-.ink-gradient {
-  background-image: linear-gradient(135deg, var(--chalk) 0%, var(--iris) 130%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+/* Chart annotation: small, uppercase, widely tracked. */
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* A hairline with a brass tick, used to separate blocks. */
+.rule {
+  height: 1px;
+  background: var(--edge);
+  position: relative;
+}
+.rule::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: -2px;
+  width: 24px;
+  height: 5px;
+  background: var(--brass);
 }
 
 .no-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 .no-scrollbar::-webkit-scrollbar-thumb {
   background: var(--edge);
-  border-radius: 3px;
 }
 .no-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
 
-/* --------------------------------------------------------------- motion ---- */
-@keyframes drift-a {
-  0%, 100% { transform: translate3d(-8%, -6%, 0) scale(1); }
-  33%      { transform: translate3d(6%, 4%, 0) scale(1.12); }
-  66%      { transform: translate3d(-4%, 8%, 0) scale(0.94); }
-}
-@keyframes drift-b {
-  0%, 100% { transform: translate3d(6%, 8%, 0) scale(1.05); }
-  40%      { transform: translate3d(-7%, -5%, 0) scale(0.92); }
-  70%      { transform: translate3d(4%, -8%, 0) scale(1.1); }
-}
-@keyframes drift-c {
-  0%, 100% { transform: translate3d(0, 4%, 0) scale(0.95); }
-  50%      { transform: translate3d(-6%, -6%, 0) scale(1.15); }
+/* ---------------------------------------------------------------- motion -- */
+@keyframes sweep {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
-@keyframes wave-slide {
+@keyframes drift-chart {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-80px, -80px, 0); }
+}
+
+@keyframes swell {
   from { transform: translate3d(0, 0, 0); }
   to   { transform: translate3d(-50%, 0, 0); }
 }
 
-@keyframes shimmer {
-  from { background-position: -220% 0; }
-  to   { background-position: 220% 0; }
-}
-
-@keyframes float-soft {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
+@keyframes tick-in {
+  from { opacity: 0; transform: translateY(3px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes shake {
@@ -265,69 +275,69 @@
 
 @keyframes breathe {
   0%, 100% { border-color: var(--edge); }
-  50% { border-color: var(--gold); }
+  50% { border-color: var(--brass); }
 }
 .breathe { animation: breathe 2s ease-in-out infinite; }
 
-.float-soft { animation: float-soft 6s ease-in-out infinite; }
-
-/* Sweeps once across a surface — used on the primary CTA. */
-.sheen {
-  position: relative;
-  overflow: hidden;
+/* --------------------------------------------------------------- cursor --- */
+/* A surveyor's crosshair rather than a glowing orb. */
+.cursor-cross {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 26px;
+  height: 26px;
+  margin: -13px 0 0 -13px;
+  pointer-events: none;
+  z-index: 90;
+  will-change: transform;
+  transition: width 160ms var(--ease-out-soft), height 160ms var(--ease-out-soft),
+    margin 160ms var(--ease-out-soft), opacity 160ms linear;
 }
-.sheen::after {
+.cursor-cross::before,
+.cursor-cross::after {
   content: "";
   position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    100deg,
-    transparent 35%,
-    color-mix(in srgb, #ffffff 45%, transparent) 50%,
-    transparent 65%
-  );
-  background-size: 220% 100%;
-  animation: shimmer 5.5s ease-in-out infinite;
-  pointer-events: none;
-  opacity: 0.5;
+  background: var(--brass);
 }
-
-/* -------------------------------------------------------------- cursor ----- */
-.cursor-dot,
+.cursor-cross::before {
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-0.5px);
+}
+.cursor-cross::after {
+  top: 50%;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  transform: translateY(-0.5px);
+}
 .cursor-ring {
   position: fixed;
   top: 0;
   left: 0;
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  border: 1px solid color-mix(in srgb, var(--brass) 60%, transparent);
+  border-radius: 9999px;
   pointer-events: none;
   z-index: 90;
-  border-radius: 9999px;
   will-change: transform;
-}
-.cursor-dot {
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -3px;
-  background: var(--chalk);
-}
-.cursor-ring {
-  width: 34px;
-  height: 34px;
-  margin: -17px 0 0 -17px;
-  border: 1px solid color-mix(in srgb, var(--iris) 75%, transparent);
   transition: width 200ms var(--ease-out-soft), height 200ms var(--ease-out-soft),
-    margin 200ms var(--ease-out-soft), background-color 200ms ease,
-    border-color 200ms ease;
+    margin 200ms var(--ease-out-soft), border-color 200ms linear,
+    opacity 160ms linear;
 }
 .cursor-ring[data-hot="true"] {
-  width: 52px;
-  height: 52px;
-  margin: -26px 0 0 -26px;
-  background: color-mix(in srgb, var(--iris) 14%, transparent);
-  border-color: color-mix(in srgb, var(--azure) 85%, transparent);
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  border-color: var(--brass);
 }
-/* Only where a real pointer exists. */
 @media (hover: none), (pointer: coarse) {
-  .cursor-dot,
+  .cursor-cross,
   .cursor-ring { display: none !important; }
 }
 
@@ -340,12 +350,7 @@
     transition-duration: 0.001ms !important;
   }
   .shake,
-  .breathe,
-  .float-soft,
-  .sheen::after {
-    animation: none !important;
-  }
-  .sheen::after { display: none; }
-  .cursor-dot,
+  .breathe { animation: none !important; }
+  .cursor-cross,
   .cursor-ring { display: none !important; }
 }

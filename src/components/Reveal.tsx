@@ -22,7 +22,7 @@ export default function Reveal({ country, solved, points, isLast, onNext }: Prop
       spread: 74,
       startVelocity: 34,
       origin: { y: 0.4 },
-      colors: ["#3DDC97", "#F7C948", "#7C6BF5", "#4A8CFF", "#EEF1F8"],
+      colors: ["#C9A227", "#DED6C4", "#3E8FA8", "#4FB57A"],
       disableForReducedMotion: true,
     });
   }, [solved, reduce]);
@@ -41,7 +41,7 @@ export default function Reveal({ country, solved, points, isLast, onNext }: Prop
       <div className="flex items-start justify-between gap-4">
         <motion.h2
           {...step(0.05)}
-          className="expanded ink-gradient text-[34px] leading-[1.05] sm:text-[44px]"
+          className="expanded text-[34px] leading-[1.05] sm:text-[44px]"
         >
           {country.name}
         </motion.h2>
@@ -53,11 +53,8 @@ export default function Reveal({ country, solved, points, isLast, onNext }: Prop
             alt=""
             aria-hidden="true"
             draggable={false}
-            className="mt-1 h-16 w-16 shrink-0 rounded-[10px] object-contain p-1 sm:h-20 sm:w-20"
-            style={{
-              background: "color-mix(in srgb, var(--chalk) 92%, transparent)",
-              boxShadow: "0 10px 30px -12px rgba(0,0,0,0.7)",
-            }}
+            className="mt-1 h-16 w-16 shrink-0 object-contain p-1.5 sm:h-20 sm:w-20"
+            style={{ background: "var(--bone)", border: "1px solid var(--edge)" }}
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).style.display = "none";
             }}
@@ -72,11 +69,8 @@ export default function Reveal({ country, solved, points, isLast, onNext }: Prop
       <motion.div {...step(0.22)} className="mt-5">
         {solved ? (
           <span
-            className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[15px] text-hit"
-            style={{
-              background: "color-mix(in srgb, var(--hit) 12%, transparent)",
-              border: "1px solid color-mix(in srgb, var(--hit) 35%, transparent)",
-            }}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 text-[15px] text-hit"
+            style={{ border: "1px solid color-mix(in srgb, var(--hit) 45%, transparent)" }}
           >
             +{points} point{points === 1 ? "" : "s"}
           </span>

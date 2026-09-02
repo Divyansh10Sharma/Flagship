@@ -72,9 +72,8 @@ export default function Home({
     <div className="flex flex-col items-center pt-2 text-center">
       <motion.div
         {...rise(0.06)}
-        className={`relative h-[190px] w-full sm:h-[230px] ${reduce ? "" : "float-soft"}`}
+        className="relative h-[190px] w-full sm:h-[230px]"
       >
-        {/* the hero flag's own colour, bloomed behind it */}
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.img
             key={`glow-${current.code}`}
@@ -101,18 +100,15 @@ export default function Home({
             animate={{ opacity: 1, scale: 1 }}
             exit={reduce ? { opacity: 1 } : { opacity: 0, scale: 1.02 }}
             transition={{ duration: reduce ? 0 : 0.9 }}
-            className="absolute inset-0 m-auto h-full w-auto max-w-full rounded-[10px] object-contain"
-            style={{
-              border: "1px solid color-mix(in srgb, var(--edge) 80%, transparent)",
-              boxShadow: "0 24px 60px -24px rgba(0,0,0,0.8)",
-            }}
+            className="absolute inset-0 m-auto h-full w-auto max-w-full object-contain"
+            style={{ border: "1px solid var(--edge)" }}
           />
         </AnimatePresence>
       </motion.div>
 
       <motion.h1
         {...rise(0.14)}
-        className="expanded ink-gradient mt-9 text-[42px] leading-none sm:text-[56px]"
+        className="expanded mt-9 text-[42px] leading-none sm:text-[56px]"
       >
         Flagship
       </motion.h1>
@@ -121,7 +117,7 @@ export default function Home({
         {...rise(0.22)}
         type="button"
         onClick={onPlay}
-        className={`btn btn-primary mt-8 h-14 w-full text-[17px] ${reduce ? "" : "sheen"}`}
+        className="btn btn-primary mt-8 h-14 w-full text-[17px]"
       >
         {playedToday ? "See today's results" : "Play today"}
       </motion.button>
@@ -130,9 +126,10 @@ export default function Home({
         {...rise(0.3)}
         className="surface surface-lit mt-6 w-full p-5 text-left"
       >
-        <p className="text-[14px] tracking-wide text-muted">{prettyDate(today)}</p>
+        <p className="label">{prettyDate(today)}</p>
+        <div className="rule mt-3" />
 
-        <div className="mt-3 divide-y divide-edge/60">
+        <div className="mt-2 divide-y divide-edge/70">
           <Stat
             label="Streak"
             value={streak > 0 ? `${streak} day${streak === 1 ? "" : "s"}` : "None yet"}

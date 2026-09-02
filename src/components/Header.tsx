@@ -1,4 +1,5 @@
 import { motion, useReducedMotion } from "motion/react";
+import Logo from "./Logo";
 
 type Props = {
   streak: number;
@@ -16,16 +17,14 @@ export default function Header({ streak, email, onAuth }: Props) {
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       className="flex items-center justify-between gap-3 py-5"
     >
-      <span className="expanded relative text-[22px] leading-none">
-        <span className="ink-gradient">Flagship</span>
+      <span className="flex items-center gap-2.5">
+        <Logo size={22} />
         <span
-          className="absolute -bottom-1.5 left-0 h-px w-full"
-          style={{
-            background:
-              "linear-gradient(90deg, var(--iris), var(--azure) 60%, transparent)",
-          }}
-          aria-hidden="true"
-        />
+          className="expanded text-[20px] leading-none text-chalk"
+          style={{ letterSpacing: "0.04em" }}
+        >
+          FLAGSHIP
+        </span>
       </span>
 
       <div className="flex items-center gap-2">
@@ -34,15 +33,12 @@ export default function Header({ streak, email, onAuth }: Props) {
             initial={reduce ? false : { opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.1, ease: [0.34, 1.56, 0.64, 1] }}
-            className="tabular flex h-9 items-center gap-1.5 rounded-full px-3 text-[14px] text-gold"
-            style={{
-              background: "color-mix(in srgb, var(--gold) 10%, transparent)",
-              border: "1px solid color-mix(in srgb, var(--gold) 30%, transparent)",
-            }}
+            className="tabular flex h-9 items-center gap-1.5 px-3 text-[14px] text-brass"
+            style={{ border: "1px solid color-mix(in srgb, var(--brass) 45%, transparent)" }}
             title={`${streak} day streak`}
           >
-            <span aria-hidden="true" className="text-[13px]">
-              🔥
+            <span className="label" style={{ color: "inherit" }}>
+              day
             </span>
             {streak}
           </motion.span>
@@ -56,10 +52,8 @@ export default function Header({ streak, email, onAuth }: Props) {
         >
           {email ? (
             <span
-              className="flex h-6 w-6 items-center justify-center rounded-full text-[13px] font-medium uppercase text-chalk"
-              style={{
-                backgroundImage: "linear-gradient(135deg, var(--iris), var(--azure))",
-              }}
+              className="flex h-6 w-6 items-center justify-center text-[13px] font-semibold uppercase"
+              style={{ background: "var(--brass)", color: "var(--void)" }}
             >
               {email[0]}
             </span>

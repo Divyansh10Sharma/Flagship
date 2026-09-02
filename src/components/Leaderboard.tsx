@@ -40,7 +40,7 @@ export default function Leaderboard({ today, userId, onHome }: Props) {
 
   return (
     <div className="pt-2">
-      <h2 className="expanded ink-gradient text-[32px] leading-none sm:text-[40px]">
+      <h2 className="expanded text-[32px] leading-none sm:text-[40px]">
         Leaderboard
       </h2>
 
@@ -91,35 +91,27 @@ export default function Leaderboard({ today, userId, onHome }: Props) {
                   className="surface flex items-center gap-3 p-3.5"
                   style={
                     me
-                      ? {
-                          borderColor:
-                            "color-mix(in srgb, var(--gold) 55%, transparent)",
-                          boxShadow:
-                            "0 0 30px -12px color-mix(in srgb, var(--gold) 60%, transparent)",
-                        }
+                      ? { borderColor: "var(--brass)" }
                       : undefined
                   }
                 >
                   <span
-                    className="tabular flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[14px]"
+                    className="tabular flex h-8 w-8 shrink-0 items-center justify-center text-[14px]"
                     style={
                       i < 3
                         ? {
                             color: "var(--void)",
                             fontWeight: 600,
-                            backgroundImage:
+                            background:
                               i === 0
-                                ? "linear-gradient(135deg, #F7C948, #FFB347)"
+                                ? "var(--brass)"
                                 : i === 1
-                                  ? "linear-gradient(135deg, #D7DEF0, #9AA6C4)"
-                                  : "linear-gradient(135deg, #C98B5B, #A96A3C)",
+                                  ? "var(--bone)"
+                                  : "var(--sea)",
                           }
                         : {
                             color: "var(--muted)",
-                            background:
-                              "color-mix(in srgb, var(--raise) 70%, transparent)",
-                            border:
-                              "1px solid color-mix(in srgb, var(--edge) 80%, transparent)",
+                            border: "1px solid var(--edge)",
                           }
                     }
                   >
@@ -130,11 +122,8 @@ export default function Leaderboard({ today, userId, onHome }: Props) {
                       {r.username}
                       {me && (
                         <span
-                          className="ml-2 rounded-full px-2 py-0.5 text-[11px] uppercase tracking-wider text-gold"
-                          style={{
-                            background:
-                              "color-mix(in srgb, var(--gold) 14%, transparent)",
-                          }}
+                          className="label ml-2"
+                          style={{ color: "var(--brass)" }}
                         >
                           you
                         </span>
@@ -142,7 +131,7 @@ export default function Leaderboard({ today, userId, onHome }: Props) {
                     </p>
                     <p className="text-[13px] text-muted">{r.sub}</p>
                   </div>
-                  <span className="tabular shrink-0 text-[18px] text-gold">{r.score}</span>
+                  <span className="tabular shrink-0 text-[18px] text-brass">{r.score}</span>
                 </motion.li>
               );
             })}
