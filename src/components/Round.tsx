@@ -97,29 +97,53 @@ export default function Round({
               src={country.flagSvg}
               alt=""
               className="h-full w-full object-cover"
-              style={{ transform: "scale(1.8)", filter: "blur(70px)" }}
+              style={{ transform: "scale(1.8)", filter: "blur(70px) saturate(150%)" }}
             />
           </motion.div>
         )}
       </AnimatePresence>
 
       <div className="flex items-center justify-between gap-4">
-        <span className="text-[15px] text-muted">
+        <span
+          className="tabular rounded-full px-3 py-1 text-[13px] tracking-wide text-muted"
+          style={{
+            background: "color-mix(in srgb, var(--raise) 60%, transparent)",
+            border: "1px solid color-mix(in srgb, var(--edge) 80%, transparent)",
+          }}
+        >
           Flag {roundIndex + 1} of {total}
         </span>
 
-        <div className="flex items-center gap-1.5" aria-label={`${misses} of ${MAX_ATTEMPTS} attempts used`}>
-          {Array.from({ length: MAX_ATTEMPTS }, (_, i) => (
-            <span
-              key={i}
-              className="h-2.5 w-2.5 rounded-full border border-edge"
-              style={{
-                background: i < misses ? "var(--miss)" : "transparent",
-                borderColor: i < misses ? "var(--miss)" : "var(--edge)",
-                transition: reduce ? "none" : "background 200ms, border-color 200ms",
-              }}
-            />
-          ))}
+        <div
+          className="flex items-center gap-1.5"
+          aria-label={`${misses} of ${MAX_ATTEMPTS} attempts used`}
+        >
+          {Array.from({ length: MAX_ATTEMPTS }, (_, i) => {
+            const spent = i < misses;
+            return (
+              <motion.span
+                key={i}
+                data-dot="true"
+                data-spent={spent}
+                animate={reduce ? {} : { scale: spent ? [1, 1.35, 1] : 1 }}
+                transition={{ duration: 0.34, ease: [0.34, 1.56, 0.64, 1] }}
+                className="h-2.5 rounded-full"
+                style={{
+                  width: spent ? 22 : 10,
+                  background: spent
+                    ? "linear-gradient(135deg, var(--miss), #ff8a94)"
+                    : "transparent",
+                  border: `1px solid ${spent ? "transparent" : "var(--edge)"}`,
+                  boxShadow: spent
+                    ? "0 0 14px -2px color-mix(in srgb, var(--miss) 70%, transparent)"
+                    : "none",
+                  transition: reduce
+                    ? "none"
+                    : "width 260ms cubic-bezier(0.22,1,0.36,1), background 220ms, box-shadow 220ms",
+                }}
+              />
+            );
+          })}
         </div>
       </div>
 
@@ -171,10 +195,14 @@ export default function Round({
               {hints.map((h) => (
                 <motion.p
                   key={h}
-                  initial={reduce ? false : { opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.2 }}
-                  className="text-[15px] text-muted"
+                  initial={reduce ? false : { opacity: 0, x: -6 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                  className="flex items-center gap-2.5 rounded-[10px] px-3 py-2.5 text-[15px] text-muted"
+                  style={{
+                    background: "color-mix(in srgb, var(--raise) 45%, transparent)",
+                    borderLeft: "2px solid color-mix(in srgb, var(--iris) 70%, transparent)",
+                  }}
                 >
                   {h}
                 </motion.p>

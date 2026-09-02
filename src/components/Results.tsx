@@ -45,7 +45,16 @@ export default function Results({ day, streak, isGuest, onSignIn, onHome, onLead
         {solved} of {day.rounds.length} flags today
       </p>
 
-      <p className="expanded tabular mt-2 text-[64px] leading-none text-gold sm:text-[76px]">
+      <p
+        className="expanded tabular mt-2 text-[68px] leading-none sm:text-[84px]"
+        style={{
+          backgroundImage:
+            "linear-gradient(135deg, var(--gold) 0%, #ffb347 55%, var(--iris) 130%)",
+          WebkitBackgroundClip: "text",
+          backgroundClip: "text",
+          color: "transparent",
+        }}
+      >
         {shown}
       </p>
 
@@ -69,13 +78,17 @@ export default function Results({ day, streak, isGuest, onSignIn, onHome, onLead
               initial={reduce ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3, delay: reduce ? 0 : 0.35 + i * 0.06 }}
-              className="flex gap-4 rounded-[14px] border border-edge bg-raise p-4"
+              className="surface surface-lit flex gap-4 p-4"
             >
               <img
                 src={c.flagSvg}
                 alt={`Flag of ${c.name}`}
                 draggable={false}
-                className="h-12 w-[72px] shrink-0 rounded-[6px] border border-edge object-contain"
+                className="h-12 w-[72px] shrink-0 rounded-[6px] object-contain"
+                style={{
+                  border: "1px solid color-mix(in srgb, var(--edge) 85%, transparent)",
+                  boxShadow: "0 10px 24px -14px rgba(0,0,0,0.9)",
+                }}
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-baseline justify-between gap-3">
@@ -94,7 +107,7 @@ export default function Results({ day, streak, isGuest, onSignIn, onHome, onLead
       </div>
 
       {isGuest && (
-        <div className="mt-6 rounded-[14px] border border-edge bg-raise p-5">
+        <div className="surface surface-lit mt-6 p-5">
           <p className="text-[15px] leading-relaxed text-muted">
             Your streak is saved on this device. Sign in and it follows you
             everywhere.
@@ -103,14 +116,14 @@ export default function Results({ day, streak, isGuest, onSignIn, onHome, onLead
             <button
               type="button"
               onClick={onSignIn}
-              className="h-12 flex-1 rounded-[10px] bg-chalk px-4 text-[15px] font-medium text-slate"
+              className="btn btn-accent h-12 flex-1 px-4 text-[15px]"
             >
               Sign in
             </button>
             <button
               type="button"
               onClick={onSignIn}
-              className="h-12 flex-1 rounded-[10px] border border-edge px-4 text-[15px] text-chalk"
+              className="btn btn-ghost h-12 flex-1 px-4 text-[15px]"
             >
               Create account
             </button>
@@ -122,14 +135,14 @@ export default function Results({ day, streak, isGuest, onSignIn, onHome, onLead
         <button
           type="button"
           onClick={onLeaderboard}
-          className="h-12 flex-1 rounded-[10px] border border-edge px-4 text-[15px] text-chalk"
+          className="btn btn-ghost h-12 flex-1 px-4 text-[15px]"
         >
           Leaderboard
         </button>
         <button
           type="button"
           onClick={onHome}
-          className="h-12 flex-1 rounded-[10px] border border-edge px-4 text-[15px] text-muted"
+          className="btn btn-ghost h-12 flex-1 px-4 text-[15px] text-muted"
         >
           Back to home
         </button>

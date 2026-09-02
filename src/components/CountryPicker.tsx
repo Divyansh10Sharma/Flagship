@@ -122,7 +122,7 @@ export default function CountryPicker({
 
   const panelBody = (
     <>
-      <div className="border-b border-edge bg-raise p-2">
+      <div className="border-b border-edge/70 p-2.5">
         <input
           ref={inputRef}
           value={query}
@@ -142,7 +142,7 @@ export default function CountryPicker({
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
-          className="h-12 w-full rounded-[10px] bg-slate px-3 text-chalk placeholder:text-muted focus:outline-none"
+          className="field h-12 w-full px-3 placeholder:text-muted"
         />
       </div>
 
@@ -167,13 +167,22 @@ export default function CountryPicker({
               onMouseEnter={() => setActive(i)}
               onClick={() => pick(c)}
               className={[
-                "flex min-h-[44px] items-center px-4 py-2.5 text-[15px] leading-snug",
+                "relative flex min-h-[44px] items-center px-4 py-2.5 text-[15px] leading-snug transition-colors duration-150",
                 out
                   ? "cursor-not-allowed text-muted line-through opacity-40"
                   : i === active
-                    ? "cursor-pointer bg-edge text-chalk"
-                    : "cursor-pointer text-chalk",
+                    ? "cursor-pointer text-chalk"
+                    : "cursor-pointer text-chalk/90",
               ].join(" ")}
+              style={
+                !out && i === active
+                  ? {
+                      background:
+                        "linear-gradient(90deg, color-mix(in srgb, var(--iris) 22%, transparent), transparent 85%)",
+                      boxShadow: "inset 2px 0 0 0 var(--iris)",
+                    }
+                  : undefined
+              }
             >
               {c.name}
             </li>
@@ -198,7 +207,7 @@ export default function CountryPicker({
         aria-haspopup="listbox"
         aria-expanded={open}
         className={[
-          "flex h-14 w-full items-center justify-between rounded-[10px] border border-edge bg-raise px-4 text-left text-muted",
+          "btn btn-ghost h-14 w-full items-center justify-between px-4 text-left text-[16px] text-muted",
           disabled ? "opacity-40" : "",
         ].join(" ")}
       >
@@ -233,7 +242,8 @@ export default function CountryPicker({
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? { opacity: 1 } : { opacity: 0, y: -4 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 right-0 top-[calc(100%+8px)] z-40 flex max-h-[340px] flex-col overflow-hidden rounded-[10px] border border-edge bg-raise"
+            className="surface surface-lit absolute left-0 right-0 top-[calc(100%+8px)] z-40 flex max-h-[340px] flex-col overflow-hidden"
+            style={{ boxShadow: "0 30px 70px -30px rgba(0,0,0,0.9)" }}
           >
             {panelBody}
           </motion.div>
@@ -249,7 +259,8 @@ export default function CountryPicker({
               animate={{ opacity: 1 }}
               exit={reduce ? { opacity: 1 } : { opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-30 bg-slate/35"
+              className="fixed inset-0 z-30"
+              style={{ background: "rgba(5,6,11,0.45)", backdropFilter: "blur(2px)" }}
               aria-hidden="true"
             />
             <motion.div
@@ -262,7 +273,8 @@ export default function CountryPicker({
                 ease: [0.22, 1, 0.36, 1],
                 duration: 0.28,
               }}
-              className="fixed inset-x-0 bottom-0 z-40 flex h-[60svh] flex-col overflow-hidden rounded-t-[14px] border-t border-edge bg-raise"
+              className="surface surface-lit fixed inset-x-0 bottom-0 z-40 flex h-[60svh] flex-col overflow-hidden rounded-b-none"
+              data-sheet="true"
               style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
             >
               <div className="flex justify-center pt-2" aria-hidden="true">

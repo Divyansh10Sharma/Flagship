@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import AuthSheet from "./components/AuthSheet";
+import Background from "./components/Background";
+import Cursor from "./components/Cursor";
 import Header from "./components/Header";
 import Leaderboard from "./components/Leaderboard";
 import Home from "./components/Home";
@@ -72,6 +75,7 @@ function restore(ip: InProgress): Game {
 }
 
 export default function App() {
+  const reduce = useReducedMotion();
   const [today] = useState(todayKey);
   const [store, setStore] = useState<Store>(emptyStore);
   const [screen, setScreen] = useState<Screen>("home");
@@ -272,11 +276,26 @@ export default function App() {
   // --- render ---------------------------------------------------------------
   const todayResult = store.days[today] ?? null;
 
+  // One key per distinct view, so a screen change cross-fades instead of
+  // snapping. The round keys on its own index too, so each flag animates in.
+  const viewKey =
+    screen === "playing" && game ? `playing-${game.roundIndex}-${game.phase}` : screen;
+
   return (
     <div className="min-h-dvh px-5 pb-28">
+      <Background />
+      <Cursor />
       <div className="mx-auto w-full max-w-[560px]">
         <Header streak={streak} email={email} onAuth={() => setAuthOpen(true)} />
 
+        <AnimatePresence mode="wait" initial={false}>
+        <motion.div
+          key={viewKey}
+          initial={reduce ? false : { opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8 }}
+          transition={{ duration: reduce ? 0 : 0.26, ease: [0.22, 1, 0.36, 1] }}
+        >
         {!booted ? null : screen === "playing" && game ? (
           <Round
             country={BY_CODE[game.codes[game.roundIndex]]}
@@ -310,6 +329,8 @@ export default function App() {
             onLeaderboard={() => setScreen("leaderboard")}
           />
         )}
+        </motion.div>
+        </AnimatePresence>
       </div>
 
       <AuthSheet

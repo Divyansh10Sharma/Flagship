@@ -19,28 +19,45 @@ export default function Reveal({ country, solved, points, isLast, onNext }: Prop
     if (!solved || reduce) return;
     confetti({
       particleCount: 90,
-      spread: 70,
+      spread: 74,
       startVelocity: 34,
       origin: { y: 0.4 },
-      colors: ["#35D07F", "#F5C542", "#EDEFF3"],
+      colors: ["#3DDC97", "#F7C948", "#7C6BF5", "#4A8CFF", "#EEF1F8"],
       disableForReducedMotion: true,
     });
   }, [solved, reduce]);
 
+  const step = (delay: number) =>
+    reduce
+      ? {}
+      : {
+          initial: { opacity: 0, y: 10 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.4, delay, ease: [0.22, 1, 0.36, 1] as const },
+        };
+
   return (
-    <div className="pt-6">
+    <div className="pt-7">
       <div className="flex items-start justify-between gap-4">
-        <h2 className="expanded text-[34px] leading-[1.05] text-chalk sm:text-[42px]">
+        <motion.h2
+          {...step(0.05)}
+          className="expanded ink-gradient text-[34px] leading-[1.05] sm:text-[44px]"
+        >
           {country.name}
-        </h2>
+        </motion.h2>
 
         {country.coatOfArms && (
-          <img
+          <motion.img
+            {...step(0.12)}
             src={country.coatOfArms}
             alt=""
             aria-hidden="true"
             draggable={false}
-            className="mt-1 h-16 w-16 shrink-0 rounded-[6px] object-contain sm:h-20 sm:w-20"
+            className="mt-1 h-16 w-16 shrink-0 rounded-[10px] object-contain p-1 sm:h-20 sm:w-20"
+            style={{
+              background: "color-mix(in srgb, var(--chalk) 92%, transparent)",
+              boxShadow: "0 10px 30px -12px rgba(0,0,0,0.7)",
+            }}
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).style.display = "none";
             }}
@@ -48,27 +65,33 @@ export default function Reveal({ country, solved, points, isLast, onNext }: Prop
         )}
       </div>
 
-      <p className="mt-3 text-[16px] leading-relaxed text-muted">{factFor(country)}</p>
+      <motion.p {...step(0.16)} className="mt-3 text-[16px] leading-relaxed text-muted">
+        {factFor(country)}
+      </motion.p>
 
-      <p className="mt-5 text-[17px]">
+      <motion.div {...step(0.22)} className="mt-5">
         {solved ? (
-          <span className="text-hit">
+          <span
+            className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[15px] text-hit"
+            style={{
+              background: "color-mix(in srgb, var(--hit) 12%, transparent)",
+              border: "1px solid color-mix(in srgb, var(--hit) 35%, transparent)",
+            }}
+          >
             +{points} point{points === 1 ? "" : "s"}
           </span>
         ) : (
-          <span className="text-muted">
+          <span className="text-[16px] text-muted">
             It was {country.name}. No points this round.
           </span>
         )}
-      </p>
+      </motion.div>
 
       <motion.button
+        {...step(0.3)}
         type="button"
         onClick={onNext}
-        initial={reduce ? false : { opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.28, delay: 0.15 }}
-        className="mt-7 h-14 w-full rounded-[10px] bg-chalk px-6 text-[17px] font-medium text-slate"
+        className="btn btn-primary mt-7 h-14 w-full text-[17px]"
       >
         {isLast ? "See results" : "Next flag"}
       </motion.button>

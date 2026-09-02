@@ -117,14 +117,14 @@ export default function UsernameField({ userId, username, onSaved }: Props) {
           autoCapitalize="off"
           spellCheck={false}
           maxLength={24}
-          className="h-12 min-w-0 flex-1 rounded-[10px] border border-edge bg-slate px-3 text-chalk placeholder:text-muted"
+          className="field h-12 min-w-0 flex-1 px-3 placeholder:text-muted"
           placeholder="pick a name"
         />
         <button
           type="button"
           onClick={runCheck}
           disabled={check.kind === "checking" || !trimmed}
-          className="h-12 shrink-0 rounded-[10px] border border-edge px-4 text-[15px] text-chalk disabled:opacity-40"
+          className="btn btn-ghost h-12 shrink-0 px-4 text-[15px]"
         >
           Check
         </button>
@@ -148,7 +148,7 @@ export default function UsernameField({ userId, username, onSaved }: Props) {
         type="button"
         onClick={save}
         disabled={saving || unchanged || check.kind !== "free"}
-        className="mt-3 h-12 w-full rounded-[10px] bg-chalk px-4 text-[15px] font-medium text-slate disabled:opacity-40"
+        className="btn btn-accent mt-3 h-12 w-full text-[15px]"
       >
         {saving ? "One moment" : "Save name"}
       </button>

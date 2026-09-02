@@ -118,7 +118,8 @@ export default function AuthSheet({
             exit={reduce ? { opacity: 1 } : { opacity: 0 }}
             transition={{ duration: 0.2 }}
             onClick={onClose}
-            className="fixed inset-0 z-50 bg-slate/70"
+            className="fixed inset-0 z-50"
+            style={{ background: "rgba(5,6,11,0.7)", backdropFilter: "blur(6px)" }}
           />
           <motion.div
             key="sheet"
@@ -129,7 +130,8 @@ export default function AuthSheet({
             animate={{ opacity: 1, y: 0 }}
             exit={reduce ? { opacity: 1 } : { opacity: 0, y: 16 }}
             transition={{ duration: 0.24, ease: "easeOut" }}
-            className="fixed inset-x-4 top-1/2 z-50 mx-auto w-auto max-w-[440px] -translate-y-1/2 rounded-[14px] border border-edge bg-raise p-6 sm:inset-x-0"
+            className="surface surface-lit fixed inset-x-4 top-1/2 z-50 mx-auto w-auto max-w-[440px] -translate-y-1/2 p-6 sm:inset-x-0"
+            style={{ boxShadow: "0 40px 90px -40px rgba(0,0,0,0.95)" }}
           >
             {email ? (
               <>
@@ -151,21 +153,21 @@ export default function AuthSheet({
                 <button
                   type="button"
                   onClick={signOut}
-                  className="mt-6 h-12 w-full rounded-[10px] border border-edge px-4 text-[15px] text-chalk"
+                  className="btn btn-ghost mt-6 h-12 w-full text-[15px]"
                 >
                   Sign out
                 </button>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="mt-2 h-12 w-full rounded-[10px] px-4 text-[15px] text-muted"
+                  className="btn mt-2 h-12 w-full text-[15px] text-muted hover:text-chalk"
                 >
                   Close
                 </button>
               </>
             ) : (
               <form onSubmit={submit}>
-                <h2 className="expanded text-[24px] leading-none text-chalk">
+                <h2 className="expanded ink-gradient text-[26px] leading-none">
                   {mode === "in" ? "Sign in" : "Create account"}
                 </h2>
                 <p className="mt-2 text-[15px] text-muted">
@@ -179,7 +181,7 @@ export default function AuthSheet({
                   placeholder="Email"
                   autoComplete="email"
                   required
-                  className="mt-5 h-12 w-full rounded-[10px] border border-edge bg-slate px-3 text-chalk placeholder:text-muted"
+                  className="field mt-5 h-12 w-full px-3 placeholder:text-muted"
                 />
                 <input
                   type="password"
@@ -189,7 +191,7 @@ export default function AuthSheet({
                   autoComplete={mode === "in" ? "current-password" : "new-password"}
                   minLength={6}
                   required
-                  className="mt-2 h-12 w-full rounded-[10px] border border-edge bg-slate px-3 text-chalk placeholder:text-muted"
+                  className="field mt-2 h-12 w-full px-3 placeholder:text-muted"
                 />
 
                 {error && <p className="mt-3 text-[14px] text-miss">{error}</p>}
@@ -197,7 +199,7 @@ export default function AuthSheet({
                 <button
                   type="submit"
                   disabled={busy}
-                  className="mt-5 h-12 w-full rounded-[10px] bg-chalk px-4 text-[15px] font-medium text-slate disabled:opacity-40"
+                  className="btn btn-accent mt-5 h-12 w-full text-[15px]"
                 >
                   {busy ? "One moment" : mode === "in" ? "Sign in" : "Create account"}
                 </button>
@@ -208,7 +210,7 @@ export default function AuthSheet({
                     setMode(mode === "in" ? "up" : "in");
                     setError("");
                   }}
-                  className="mt-2 h-12 w-full rounded-[10px] px-4 text-[15px] text-muted"
+                  className="btn mt-2 h-12 w-full text-[15px] text-muted hover:text-chalk"
                 >
                   {mode === "in" ? "Create an account instead" : "I already have an account"}
                 </button>

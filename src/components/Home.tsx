@@ -14,6 +14,17 @@ type Props = {
   onLeaderboard: () => void;
 };
 
+/* Full class names only — Tailwind scans source statically, so an interpolated
+   `text-${tone}` is never generated and the value renders invisible. */
+function Stat({ label, value, gold = false }: { label: string; value: string; gold?: boolean }) {
+  return (
+    <div className="flex items-baseline justify-between gap-4 py-2">
+      <span className="text-[15px] text-muted">{label}</span>
+      <span className={`tabular text-[15px] ${gold ? "text-gold" : "text-chalk"}`}>{value}</span>
+    </div>
+  );
+}
+
 export default function Home({
   today,
   todayCodes,
@@ -45,7 +56,6 @@ export default function Home({
   }, [hero.length, reduce]);
 
   const current = hero[i];
-  // The streak the player would be on if they finish today.
   const prospective = playedToday ? streak : streak + 1;
   const multiplier = multiplierFor(prospective);
 
@@ -53,14 +63,33 @@ export default function Home({
     reduce
       ? {}
       : {
-          initial: { opacity: 0, y: 8 },
+          initial: { opacity: 0, y: 10 },
           animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.32, delay, ease: "easeOut" as const },
+          transition: { duration: 0.45, delay, ease: [0.22, 1, 0.36, 1] as const },
         };
 
   return (
     <div className="flex flex-col items-center pt-2 text-center">
-      <motion.div {...rise(0.06)} className="relative h-[180px] w-full sm:h-[220px]">
+      <motion.div
+        {...rise(0.06)}
+        className={`relative h-[190px] w-full sm:h-[230px] ${reduce ? "" : "float-soft"}`}
+      >
+        {/* the hero flag's own colour, bloomed behind it */}
+        <AnimatePresence mode="popLayout" initial={false}>
+          <motion.img
+            key={`glow-${current.code}`}
+            src={current.flagSvg}
+            alt=""
+            aria-hidden="true"
+            initial={reduce ? false : { opacity: 0 }}
+            animate={{ opacity: 0.4 }}
+            exit={reduce ? { opacity: 0.4 } : { opacity: 0 }}
+            transition={{ duration: reduce ? 0 : 0.9 }}
+            className="absolute inset-0 m-auto h-full w-auto max-w-full object-contain"
+            style={{ filter: "blur(46px) saturate(160%)", transform: "scale(1.25)" }}
+          />
+        </AnimatePresence>
+
         <AnimatePresence mode="popLayout" initial={false}>
           <motion.img
             key={current.code}
@@ -68,54 +97,52 @@ export default function Home({
             alt=""
             aria-hidden="true"
             draggable={false}
-            initial={reduce ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={reduce ? { opacity: 1 } : { opacity: 0 }}
+            initial={reduce ? false : { opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={reduce ? { opacity: 1 } : { opacity: 0, scale: 1.02 }}
             transition={{ duration: reduce ? 0 : 0.9 }}
-            className="absolute inset-0 m-auto h-full w-auto max-w-full rounded-[6px] border border-edge object-contain"
+            className="absolute inset-0 m-auto h-full w-auto max-w-full rounded-[10px] object-contain"
+            style={{
+              border: "1px solid color-mix(in srgb, var(--edge) 80%, transparent)",
+              boxShadow: "0 24px 60px -24px rgba(0,0,0,0.8)",
+            }}
           />
         </AnimatePresence>
       </motion.div>
 
       <motion.h1
-        {...rise(0.12)}
-        className="expanded mt-7 text-[40px] leading-none text-chalk sm:text-[52px]"
+        {...rise(0.14)}
+        className="expanded ink-gradient mt-9 text-[42px] leading-none sm:text-[56px]"
       >
         Flagship
       </motion.h1>
 
       <motion.button
-        {...rise(0.18)}
+        {...rise(0.22)}
         type="button"
         onClick={onPlay}
-        className="mt-7 h-14 w-full rounded-[10px] bg-chalk px-6 text-[17px] font-medium text-slate"
+        className={`btn btn-primary mt-8 h-14 w-full text-[17px] ${reduce ? "" : "sheen"}`}
       >
         {playedToday ? "See today's results" : "Play today"}
       </motion.button>
 
       <motion.div
-        {...rise(0.24)}
-        className="mt-8 w-full rounded-[14px] border border-edge bg-raise p-5 text-left"
+        {...rise(0.3)}
+        className="surface surface-lit mt-6 w-full p-5 text-left"
       >
-        <p className="text-[15px] text-muted">{prettyDate(today)}</p>
+        <p className="text-[14px] tracking-wide text-muted">{prettyDate(today)}</p>
 
-        <div className="mt-4 flex items-baseline justify-between gap-4">
-          <span className="text-[15px] text-muted">Streak</span>
-          <span className="tabular text-[15px] text-chalk">
-            {streak > 0 ? `${streak} day${streak === 1 ? "" : "s"}` : "None yet"}
-          </span>
-        </div>
-
-        <div className="mt-2 flex items-baseline justify-between gap-4">
-          <span className="text-[15px] text-muted">
-            {playedToday ? "Multiplier today" : "Multiplier if you play"}
-          </span>
-          <span className="tabular text-[15px] text-gold">{multiplier}&times;</span>
-        </div>
-
-        <div className="mt-2 flex items-baseline justify-between gap-4">
-          <span className="text-[15px] text-muted">Lifetime points</span>
-          <span className="tabular text-[15px] text-chalk">{lifetime}</span>
+        <div className="mt-3 divide-y divide-edge/60">
+          <Stat
+            label="Streak"
+            value={streak > 0 ? `${streak} day${streak === 1 ? "" : "s"}` : "None yet"}
+          />
+          <Stat
+            label={playedToday ? "Multiplier today" : "Multiplier if you play"}
+            value={`${multiplier}×`}
+            gold
+          />
+          <Stat label="Lifetime points" value={String(lifetime)} />
         </div>
 
         {streak === 0 && (
@@ -124,10 +151,10 @@ export default function Home({
       </motion.div>
 
       <motion.button
-        {...rise(0.3)}
+        {...rise(0.38)}
         type="button"
         onClick={onLeaderboard}
-        className="mt-3 h-12 w-full rounded-[10px] border border-edge px-4 text-[15px] text-muted"
+        className="btn btn-ghost mt-3 h-12 w-full text-[15px]"
       >
         Leaderboard
       </motion.button>
