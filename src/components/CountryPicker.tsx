@@ -4,6 +4,7 @@ import { ALPHABETICAL } from "../lib/countries";
 import { filterCountries } from "../lib/search";
 import type { Country } from "../lib/types";
 import { useIsDesktop } from "../hooks/useMediaQuery";
+import { useKeyboardInset } from "../hooks/useKeyboardInset";
 
 type Props = {
   disabledCodes: string[];
@@ -24,6 +25,7 @@ export default function CountryPicker({
 
   const isDesktop = useIsDesktop();
   const reduce = useReducedMotion();
+  const keyboard = useKeyboardInset(open && !isDesktop);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -44,7 +46,7 @@ export default function CountryPicker({
 
   // Focus the search field as soon as the panel is up.
   useEffect(() => {
-    if (open) inputRef.current?.focus();
+    if (open) inputRef.current?.focus({ preventScroll: true });
   }, [open]);
 
   // Escape anywhere, click outside, and body-scroll lock for the mobile sheet.
@@ -138,7 +140,7 @@ export default function CountryPicker({
           aria-activedescendant={
             results[active] ? `opt-${results[active].code}` : undefined
           }
-          placeholder="Type a country"
+          placeholder="Start typing"
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
@@ -210,7 +212,7 @@ export default function CountryPicker({
           disabled ? "opacity-40" : "",
         ].join(" ")}
       >
-        <span className="fell text-[18px]">Which country?</span>
+        <span className="fell text-[18px]">Name the country</span>
         <svg
           width="16"
           height="16"
@@ -259,7 +261,9 @@ export default function CountryPicker({
               exit={reduce ? { opacity: 1 } : { opacity: 0 }}
               transition={{ duration: 0.2 }}
               className="fixed inset-0 z-30"
-              style={{ background: "rgba(8,6,5,0.72)" }}
+              style={{ background: "rgba(8,6,5,0.28)" }}
+              onClick={close}
+              onTouchStart={close}
               aria-hidden="true"
             />
             <motion.div
@@ -272,9 +276,15 @@ export default function CountryPicker({
                 ease: [0.22, 1, 0.36, 1],
                 duration: 0.28,
               }}
-              className="plank fixed inset-x-0 bottom-0 z-40 flex h-[60svh] flex-col overflow-hidden"
+              className="plank fixed inset-x-0 z-40 flex h-[55svh] flex-col overflow-hidden"
               data-sheet="true"
-              style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+              style={{
+                // ride above the keyboard instead of hiding beneath it
+                bottom: keyboard,
+                // never grow so tall that the flag is pushed off screen
+                maxHeight: `calc(100svh - ${keyboard}px - 320px)`,
+                paddingBottom: keyboard ? 0 : "env(safe-area-inset-bottom)",
+              }}
             >
               <div className="flex justify-center pt-2" aria-hidden="true">
                 <div className="h-1 w-10 rounded-full bg-edge" />

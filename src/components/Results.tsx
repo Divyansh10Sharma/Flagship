@@ -42,7 +42,7 @@ export default function Results({ day, streak, isGuest, onSignIn, onHome, onLead
 
   return (
     <div className="pt-2">
-      <p className="ledger" style={{ color: "var(--muted)" }}>
+      <p className="ledger-num" style={{ color: "var(--muted)" }}>
         {solved} of {day.rounds.length} flags today
       </p>
 
