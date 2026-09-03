@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import CountryPicker from "./CountryPicker";
 import FlagCard from "./FlagCard";
@@ -6,6 +6,7 @@ import Reveal from "./Reveal";
 import Pennant from "./Pennant";
 import { MAX_ATTEMPTS } from "../lib/scoring";
 import { useIsDesktop } from "../hooks/useMediaQuery";
+import { useKeyboardInset } from "../hooks/useKeyboardInset";
 import type { Country, RoundResult } from "../lib/types";
 
 type Props = {
@@ -51,6 +52,28 @@ export default function Round({
   const [pickerOpen, setPickerOpen] = useState(false);
   const misses = wrongGuesses.length;
   const prevMisses = useRef(misses);
+
+  // The phone layout does not scroll — document height equals viewport height —
+  // so the flag cannot slide out of the sheet's way. The sheet instead takes
+  // exactly what is left beneath the flag, measured rather than assumed so it
+  // survives changes to the header, the round label, or the flag's own size.
+  const flagBoxRef = useRef<HTMLDivElement>(null);
+  const { height: viewport } = useKeyboardInset(pickerOpen && !isDesktop);
+  const [roomBelowFlag, setRoomBelowFlag] = useState(0);
+
+  useLayoutEffect(() => {
+    if (!pickerOpen || isDesktop) {
+      setRoomBelowFlag(0);
+      return;
+    }
+    // A frame late on purpose: the chrome above the flag folds away on open,
+    // and measuring before that reflow would reserve room that no longer exists.
+    const id = requestAnimationFrame(() => {
+      const bottom = flagBoxRef.current?.getBoundingClientRect().bottom ?? 0;
+      setRoomBelowFlag(Math.max(0, Math.round(viewport - bottom - 8)));
+    });
+    return () => cancelAnimationFrame(id);
+  }, [pickerOpen, isDesktop, viewport]);
 
   // Shake on a new miss, and lock the picker for the length of the shake.
   useEffect(() => {
@@ -140,7 +163,7 @@ export default function Round({
           incoming face until the outgoing one finishes, and a re-render landing
           in that window (the picker closing, say) can leave the card blank.
           Changing the key swaps both faces in a single commit instead. */}
-      <div className="mt-5" style={{ perspective: 1000 }}>
+      <div className="mt-5" data-flag-box="true" ref={flagBoxRef} style={{ perspective: 1000 }}>
         <motion.div
           key={revealed ? "back" : "front"}
           initial={reduce ? false : { rotateY: -90, opacity: 0 }}
@@ -177,6 +200,7 @@ export default function Round({
             onSelect={onGuess}
             onOpenChange={setPickerOpen}
             disabled={shaking}
+            roomBelowFlag={roomBelowFlag}
           />
 
           <div className="mt-4 space-y-1.5" aria-live="polite">

@@ -382,3 +382,23 @@
   .cursor-dot,
   .cursor-ring { display: none !important; }
 }
+
+/* ---------------------------------------------------------------------------
+   Mobile picker: reclaiming height from the chrome.
+
+   A phone with the keyboard up leaves roughly 370px of visible viewport, and
+   the flag is 180 of it. The page does not scroll (document height equals the
+   viewport), so the flag cannot move out of the sheet's way — the only slack
+   is the chrome above it. The logo and the sign-in button are not actionable
+   mid-guess, so they stand down; the attempt pennants stay, because how many
+   guesses are left is exactly what you weigh while choosing.
+
+   `display`, not `opacity`: motion leaves an inline opacity on the header that
+   a stylesheet rule cannot outrank. The attribute is only ever set on mobile.
+--------------------------------------------------------------------------- */
+html[data-picker="open"] [data-app-header] {
+  display: none;
+}
+html[data-picker="open"] [data-flag-box] {
+  margin-top: 0.5rem;
+}

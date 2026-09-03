@@ -11,6 +11,8 @@ type Props = {
   onSelect: (code: string) => void;
   onOpenChange?: (open: boolean) => void;
   disabled?: boolean;
+  /** Pixels left beneath the flag, measured by the round. 0 = not measured yet. */
+  roomBelowFlag?: number;
 };
 
 export default function CountryPicker({
@@ -18,6 +20,7 @@ export default function CountryPicker({
   onSelect,
   onOpenChange,
   disabled = false,
+  roomBelowFlag = 0,
 }: Props) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
@@ -27,14 +30,18 @@ export default function CountryPicker({
   const reduce = useReducedMotion();
   const { inset: keyboard, height: viewport } = useKeyboardInset(open && !isDesktop);
 
-  // Size the sheet against the space the keyboard actually leaves, not against
-  // svh — svh does not know the keyboard exists, so subtracting a fixed slice
-  // for the flag on top of it collapsed the list to nothing on a short phone.
-  // Take a majority of what's visible, never less than a few readable rows,
-  // and always leave a sliver of the flag showing above.
-  const sheetHeight = Math.round(
-    Math.min(Math.max(viewport * 0.56, 260), Math.max(viewport - 96, 200))
-  );
+  // With the keyboard up the sheet gets exactly the room left under the flag —
+  // measured by the round, since the phone layout cannot scroll the flag out of
+  // the way. Capped at 62% so that with the keyboard down, where the room is
+  // most of the page, the sheet doesn't swallow the screen. Until the first
+  // measurement lands (one frame) half the viewport is a close enough guess
+  // that the correction is invisible under the slide-in.
+  const room = roomBelowFlag || Math.round(viewport * 0.5);
+  const sheetHeight = Math.round(Math.min(Math.max(room, 132), viewport * 0.62));
+
+  // Keyboard up means every pixel counts: the drag handle is unusable anyway
+  // while a keyboard owns the gesture area, so it and some padding step aside.
+  const tight = keyboard > 0;
 
   const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -74,12 +81,18 @@ export default function CountryPicker({
     document.addEventListener("mousedown", onDown);
     document.addEventListener("touchstart", onDown);
     const prev = document.body.style.overflow;
-    if (!isDesktop) document.body.style.overflow = "hidden";
+    // The attribute drives the chrome that folds away to make room for the
+    // sheet (see index.css). Mobile only — desktop has height to spare.
+    if (!isDesktop) {
+      document.body.style.overflow = "hidden";
+      document.documentElement.dataset.picker = "open";
+    }
     return () => {
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("mousedown", onDown);
       document.removeEventListener("touchstart", onDown);
       document.body.style.overflow = prev;
+      delete document.documentElement.dataset.picker;
     };
   }, [open, isDesktop]);
 
@@ -133,7 +146,7 @@ export default function CountryPicker({
 
   const panelBody = (
     <>
-      <div className="border-b border-edge/70 p-2.5">
+      <div className={`border-b border-edge/70 ${tight ? "p-2" : "p-2.5"}`}>
         <input
           ref={inputRef}
           value={query}
@@ -153,7 +166,7 @@ export default function CountryPicker({
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
-          className="field h-12 w-full px-3 placeholder:text-muted"
+          className={`field w-full px-3 placeholder:text-muted ${tight ? "h-11" : "h-12"}`}
         />
       </div>
 
@@ -294,9 +307,11 @@ export default function CountryPicker({
                 paddingBottom: keyboard ? 0 : "env(safe-area-inset-bottom)",
               }}
             >
-              <div className="flex justify-center pt-2" aria-hidden="true">
-                <div className="h-1 w-10 rounded-full bg-edge" />
-              </div>
+              {!tight && (
+                <div className="flex justify-center pt-2" aria-hidden="true">
+                  <div className="h-1 w-10 rounded-full bg-edge" />
+                </div>
+              )}
               {panelBody}
             </motion.div>
           </>
