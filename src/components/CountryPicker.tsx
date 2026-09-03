@@ -25,7 +25,16 @@ export default function CountryPicker({
 
   const isDesktop = useIsDesktop();
   const reduce = useReducedMotion();
-  const keyboard = useKeyboardInset(open && !isDesktop);
+  const { inset: keyboard, height: viewport } = useKeyboardInset(open && !isDesktop);
+
+  // Size the sheet against the space the keyboard actually leaves, not against
+  // svh — svh does not know the keyboard exists, so subtracting a fixed slice
+  // for the flag on top of it collapsed the list to nothing on a short phone.
+  // Take a majority of what's visible, never less than a few readable rows,
+  // and always leave a sliver of the flag showing above.
+  const sheetHeight = Math.round(
+    Math.min(Math.max(viewport * 0.56, 260), Math.max(viewport - 96, 200))
+  );
 
   const rootRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -276,13 +285,12 @@ export default function CountryPicker({
                 ease: [0.22, 1, 0.36, 1],
                 duration: 0.28,
               }}
-              className="plank fixed inset-x-0 z-40 flex h-[55svh] flex-col overflow-hidden"
+              className="plank fixed inset-x-0 z-40 flex flex-col overflow-hidden"
               data-sheet="true"
               style={{
                 // ride above the keyboard instead of hiding beneath it
                 bottom: keyboard,
-                // never grow so tall that the flag is pushed off screen
-                maxHeight: `calc(100svh - ${keyboard}px - 320px)`,
+                height: sheetHeight,
                 paddingBottom: keyboard ? 0 : "env(safe-area-inset-bottom)",
               }}
             >
