@@ -6,6 +6,7 @@ import { factFor } from "../lib/facts";
 import type { DayResult } from "../lib/types";
 
 type Props = {
+  liveFacts?: Record<string, { text: string; url: string }>;
   day: DayResult;
   streak: number;
   isGuest: boolean;
@@ -35,7 +36,15 @@ function useCountUp(target: number, ms: number, skip: boolean) {
   return n;
 }
 
-export default function Results({ day, streak, isGuest, onSignIn, onHome, onLeaderboard }: Props) {
+export default function Results({
+  day,
+  streak,
+  isGuest,
+  onSignIn,
+  onHome,
+  onLeaderboard,
+  liveFacts = {},
+}: Props) {
   const reduce = useReducedMotion();
   const shown = useCountUp(day.final, 800, !!reduce);
   const solved = day.rounds.filter((r) => r.solved).length;
@@ -92,7 +101,9 @@ export default function Results({ day, streak, isGuest, onSignIn, onHome, onLead
                     {r.points}
                   </span>
                 </div>
-                <p className="mt-1 text-[14px] leading-snug" style={{ color: "var(--sepia-soft)" }}>{factFor(c)}</p>
+                <p className="mt-1 text-[14px] leading-snug" style={{ color: "var(--sepia-soft)" }}>
+                  {liveFacts[c.code]?.text ?? factFor(c)}
+                </p>
               </div>
             </motion.div>
           );

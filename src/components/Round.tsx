@@ -17,6 +17,7 @@ type Props = {
   result: RoundResult | null;
   onGuess: (code: string) => void;
   onNext: () => void;
+  liveFact?: { text: string; url: string };
 };
 
 function hintsFor(country: Country, misses: number): string[] {
@@ -41,6 +42,7 @@ export default function Round({
   result,
   onGuess,
   onNext,
+  liveFact,
 }: Props) {
   const reduce = useReducedMotion();
   const isDesktop = useIsDesktop();
@@ -159,6 +161,7 @@ export default function Round({
               points={result?.points ?? 0}
               isLast={roundIndex === total - 1}
               onNext={onNext}
+              liveFact={liveFact}
             />
           )}
         </motion.div>

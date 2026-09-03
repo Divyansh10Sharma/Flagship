@@ -29,6 +29,7 @@ import { supabase } from "./lib/supabase";
 import { emitSync } from "./lib/syncBus";
 import { fetchProfile } from "./lib/profile";
 import { flushPending, pushDay, syncAll } from "./lib/sync";
+import { loadDailyFacts, type LiveFact } from "./lib/wiki";
 import type { DayResult, InProgress, RoundResult } from "./lib/types";
 
 type Screen = "home" | "playing" | "results" | "leaderboard";
@@ -86,6 +87,7 @@ export default function App() {
   const [email, setEmail] = useState<string | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [authOpen, setAuthOpen] = useState(false);
+  const [liveFacts, setLiveFacts] = useState<Record<string, LiveFact>>({});
 
   const gameRef = useRef<Game | null>(null);
   gameRef.current = game;
@@ -162,6 +164,16 @@ export default function App() {
   const lifetime = useMemo(() => lifetimePoints(store), [store]);
   const todayCodes = useMemo(() => getDailyRounds(today), [today]);
   const pending = useMemo(() => pendingDates(store).length, [store]);
+
+  // Real facts for today's three countries, fetched once and cached for the
+  // day. Purely additive: if this never resolves the game still shows the
+  // deterministic template from facts.ts, so offline play is unaffected.
+  useEffect(() => {
+    if (!booted) return;
+    const ac = new AbortController();
+    loadDailyFacts(todayCodes, today, ac.signal).then(setLiveFacts).catch(() => {});
+    return () => ac.abort();
+  }, [booted, today, todayCodes]);
 
   const syncState = useSyncStatus({ pendingCount: pending, signedIn: Boolean(userId) });
 
@@ -304,6 +316,7 @@ export default function App() {
             phase={game.phase}
             wrongGuesses={game.wrongGuesses[game.roundIndex]}
             result={game.results[game.roundIndex] ?? null}
+            liveFact={liveFacts[game.codes[game.roundIndex]]}
             onGuess={onGuess}
             onNext={onNext}
           />
@@ -317,6 +330,7 @@ export default function App() {
             onSignIn={() => setAuthOpen(true)}
             onHome={() => setScreen("home")}
             onLeaderboard={() => setScreen("leaderboard")}
+            liveFacts={liveFacts}
           />
         ) : (
           <Home

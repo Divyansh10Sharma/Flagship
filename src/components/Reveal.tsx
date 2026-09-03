@@ -10,9 +10,17 @@ type Props = {
   points: number;
   isLast: boolean;
   onNext: () => void;
+  liveFact?: { text: string; url: string };
 };
 
-export default function Reveal({ country, solved, points, isLast, onNext }: Props) {
+export default function Reveal({
+  country,
+  solved,
+  points,
+  isLast,
+  onNext,
+  liveFact,
+}: Props) {
   const reduce = useReducedMotion();
 
   useEffect(() => {
@@ -63,8 +71,21 @@ export default function Reveal({ country, solved, points, isLast, onNext }: Prop
       </div>
 
       <motion.p {...step(0.16)} className="fell mt-3 text-[18px] leading-relaxed" style={{ color: "var(--muted)" }}>
-        {factFor(country)}
+        {liveFact ? liveFact.text : factFor(country)}
       </motion.p>
+
+      {liveFact && (
+        <motion.a
+          {...step(0.2)}
+          href={liveFact.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ledger-num mt-2 inline-block underline decoration-dotted underline-offset-4"
+          style={{ color: "var(--brass)" }}
+        >
+          Read more on Wikipedia
+        </motion.a>
+      )}
 
       <motion.div {...step(0.22)} className="mt-5">
         {solved ? (
