@@ -1,0 +1,1394 @@
+<title>Flagship Deck Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;600&family=Spectral:ital,wght@0,400;0,600;1,400&display=swap">
+
+<style>
+  /* ---------------------------------------------------------------
+     Palette. Light is the default and complete; the two dark blocks
+     below redefine only tokens, so nothing is left undefined in the
+     un-stamped (system) state.
+  --------------------------------------------------------------- */
+  :root {
+    --bg:        #eef1ee;
+    --surface:   #f8faf7;
+    --sunk:      #e2e7e3;
+    --ink:       #0f2029;
+    --ink-2:     #4a6470;
+    --ink-3:     #7a919a;
+    --rule:      #c7d1cc;
+    --rule-soft: #dbe2dd;
+    --brass:     #8a5f0d;
+    --brass-bg:  #f0e6cd;
+    --signal:    #9d3323;
+    --signal-bg: #f6e2dd;
+    --good:      #2c6146;
+    --good-bg:   #dcebe2;
+
+    --measure: 68ch;
+    --step--1: 0.815rem;
+    --step-0:  1.0625rem;
+    --step-1:  1.32rem;
+    --step-2:  1.72rem;
+    --step-3:  2.3rem;
+    --step-4:  3.1rem;
+
+    --sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
+    --serif: "Spectral", Georgia, "Times New Roman", serif;
+    --mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg:        #0a1a20;
+      --surface:   #0f242c;
+      --sunk:      #081418;
+      --ink:       #dee6e3;
+      --ink-2:     #93a9af;
+      --ink-3:     #6a848c;
+      --rule:      #1e3a44;
+      --rule-soft: #162c34;
+      --brass:     #d3a03c;
+      --brass-bg:  #23200f;
+      --signal:    #dd7a63;
+      --signal-bg: #2a1512;
+      --good:      #7cc3a0;
+      --good-bg:   #0e241b;
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg:        #0a1a20;
+    --surface:   #0f242c;
+    --sunk:      #081418;
+    --ink:       #dee6e3;
+    --ink-2:     #93a9af;
+    --ink-3:     #6a848c;
+    --rule:      #1e3a44;
+    --rule-soft: #162c34;
+    --brass:     #d3a03c;
+    --brass-bg:  #23200f;
+    --signal:    #dd7a63;
+    --signal-bg: #2a1512;
+    --good:      #7cc3a0;
+    --good-bg:   #0e241b;
+    color-scheme: dark;
+  }
+
+  /* --------------------------------------------------------------- */
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: var(--step-0);
+    line-height: 1.68;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .shell {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 1fr);
+    gap: 0;
+    max-width: 78rem;
+    margin: 0 auto;
+    align-items: start;
+  }
+
+  /* ------------------------------ rail ------------------------------ */
+
+  .rail {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 2.25rem 1.25rem 2rem 1.5rem;
+    border-right: 1px solid var(--rule);
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .brand { display: flex; flex-direction: column; gap: 0.3rem; }
+  .brand-mark {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: var(--step-1);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .brand-sub {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  .rail-list { display: flex; flex-direction: column; gap: 0.1rem; }
+
+  .rail-link {
+    display: grid;
+    grid-template-columns: 1.9rem 1fr;
+    gap: 0.5rem;
+    align-items: baseline;
+    padding: 0.4rem 0.5rem 0.4rem 0.55rem;
+    border: 0;
+    background: none;
+    text-align: left;
+    color: var(--ink-2);
+    font-family: var(--sans);
+    font-size: 0.83rem;
+    font-weight: 500;
+    line-height: 1.3;
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    margin-left: -0.55rem;
+  }
+  .rail-num {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .rail-link:hover { color: var(--ink); }
+  .rail-link[aria-current="page"] {
+    color: var(--ink);
+    font-weight: 700;
+    border-left-color: var(--brass);
+  }
+  .rail-link[aria-current="page"] .rail-num { color: var(--brass); }
+
+  /* ------------------------------ main ------------------------------ */
+
+  main { padding: 2.25rem 2.5rem 4rem; min-width: 0; }
+
+  .leg { max-width: var(--measure); }
+
+  .bearing { margin-bottom: 2.25rem; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--brass);
+    margin: 0 0 0.9rem;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--sans);
+    text-wrap: balance;
+    letter-spacing: -0.022em;
+    margin: 0;
+    line-height: 1.12;
+  }
+  h1 { font-size: var(--step-4); font-weight: 700; }
+  h2 { font-size: var(--step-3); font-weight: 700; }
+  h3 {
+    font-size: var(--step-1);
+    font-weight: 600;
+    margin: 2.5rem 0 0.85rem;
+    letter-spacing: -0.015em;
+  }
+  h4 {
+    font-size: 0.78rem;
+    font-family: var(--mono);
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+
+  .dek {
+    font-size: var(--step-1);
+    line-height: 1.45;
+    color: var(--ink-2);
+    margin: 1rem 0 0;
+    font-style: italic;
+  }
+
+  p { margin: 0 0 1.05rem; }
+  main a { color: var(--brass); text-underline-offset: 3px; }
+
+  strong { font-weight: 600; color: var(--ink); }
+  em { font-style: italic; }
+
+  ul, ol { margin: 0 0 1.05rem; padding-left: 1.15rem; }
+  li { margin-bottom: 0.42rem; }
+  li::marker { color: var(--ink-3); }
+
+  code {
+    font-family: var(--mono);
+    font-size: 0.855em;
+    background: var(--sunk);
+    padding: 0.1em 0.35em;
+    border-radius: 2px;
+  }
+
+  pre {
+    font-family: var(--mono);
+    font-size: 0.79rem;
+    line-height: 1.62;
+    background: var(--sunk);
+    border-left: 2px solid var(--rule);
+    padding: 0.95rem 1.1rem;
+    overflow-x: auto;
+    margin: 0 0 1.15rem;
+  }
+  pre code { background: none; padding: 0; font-size: inherit; }
+  .cm { color: var(--ink-3); }
+  .hl { color: var(--signal); font-weight: 600; }
+  .ok { color: var(--good); font-weight: 600; }
+
+  .path {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-3);
+    margin: 0 0 0.4rem;
+  }
+
+  /* ------------------------- teaching blocks ------------------------- */
+
+  /* The three recurring voices: plain language, the bug, the formal term. */
+
+  .plain {
+    border-left: 2px solid var(--brass);
+    padding: 0.1rem 0 0.1rem 1.15rem;
+    margin: 0 0 1.4rem;
+  }
+  .plain h4 { color: var(--brass); margin-bottom: 0.5rem; }
+  .plain p:last-child { margin-bottom: 0; }
+
+  .term {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 1rem 1.15rem;
+    margin: 1.6rem 0;
+  }
+  .term h4 { margin-bottom: 0.55rem; }
+  .term p:last-child { margin-bottom: 0; }
+  .term .word {
+    font-family: var(--sans);
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+
+  .bug {
+    border: 1px solid var(--rule);
+    border-top: 2px solid var(--signal);
+    margin: 1.6rem 0;
+  }
+  .bug-row {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: 1rem;
+    padding: 0.85rem 1.15rem;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .bug-row:last-child { border-bottom: 0; }
+  .bug-row > .k {
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding-top: 0.32rem;
+  }
+  .bug-row.sym > .k { color: var(--signal); }
+  .bug-row.fix > .k { color: var(--good); }
+  .bug-row > .v { font-size: 0.965rem; }
+  .bug-row > .v > :last-child { margin-bottom: 0; }
+  .bug-row > .v > pre { margin-top: 0.5rem; font-size: 0.75rem; }
+
+  /* ------------------------------ data ------------------------------ */
+
+  .measured { overflow-x: auto; margin: 0 0 1.4rem; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+  caption {
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    padding-bottom: 0.55rem;
+  }
+  th, td {
+    text-align: left;
+    padding: 0.5rem 0.85rem 0.5rem 0;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+  }
+  th {
+    font-family: var(--mono);
+    font-weight: 600;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    border-bottom-color: var(--rule);
+  }
+  td.num, th.num {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+    padding-right: 0;
+  }
+  .was { color: var(--signal); }
+  .now { color: var(--good); }
+
+  /* ------------------------------ misc ------------------------------ */
+
+  .lede { font-size: var(--step-1); line-height: 1.5; }
+
+  .rule { border: 0; border-top: 1px solid var(--rule); margin: 2.5rem 0; }
+
+  .stat-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 2.5rem;
+    padding: 1.15rem 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin: 0 0 2rem;
+  }
+  .stat { display: flex; flex-direction: column; gap: 0.15rem; }
+  .stat-v {
+    font-family: var(--mono);
+    font-size: var(--step-1);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+  .stat-k {
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+
+  /* ----------------------------- pager ----------------------------- */
+
+  .pager {
+    display: flex;
+    align-items: stretch;
+    gap: 1rem;
+    max-width: var(--measure);
+    margin-top: 3.5rem;
+    border-top: 1px solid var(--rule);
+    padding-top: 1.25rem;
+  }
+  .pbtn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    background: none;
+    border: 0;
+    padding: 0.55rem 0;
+    cursor: pointer;
+    color: var(--ink);
+    font-family: var(--sans);
+    text-align: left;
+  }
+  .pbtn.next { text-align: right; align-items: flex-end; }
+  .pbtn:disabled { opacity: 0.3; cursor: default; }
+  .pbtn .dir {
+    font-family: var(--mono);
+    font-size: 0.63rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .pbtn .pt { font-weight: 600; font-size: 0.95rem; letter-spacing: -0.01em; }
+  .pbtn:not(:disabled):hover .pt { color: var(--brass); }
+  .counter {
+    align-self: center;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--brass);
+    outline-offset: 2px;
+  }
+
+  /* ---------------------------- responsive ---------------------------- */
+
+  @media (max-width: 62rem) {
+    .shell { grid-template-columns: 1fr; }
+    .rail {
+      position: static;
+      height: auto;
+      border-right: 0;
+      border-bottom: 1px solid var(--rule);
+      padding: 1.5rem 1.25rem 0;
+      background: var(--bg);
+    }
+    .rail-list {
+      flex-direction: row;
+      overflow-x: auto;
+      gap: 0.35rem;
+      padding-bottom: 0.9rem;
+      scrollbar-width: thin;
+    }
+    .rail-link {
+      grid-template-columns: 1fr;
+      gap: 0.1rem;
+      white-space: nowrap;
+      border-left: 0;
+      border-bottom: 2px solid transparent;
+      margin-left: 0;
+      padding: 0.3rem 0.6rem;
+    }
+    .rail-link[aria-current="page"] {
+      border-left: 0;
+      border-bottom-color: var(--brass);
+    }
+    main { padding: 2rem 1.25rem 3.5rem; }
+    h1 { font-size: var(--step-3); }
+    h2 { font-size: var(--step-2); }
+    .bug-row { grid-template-columns: 1fr; gap: 0.3rem; }
+    .bug-row > .k { padding-top: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { scroll-behavior: auto !important; }
+  }
+</style>
+
+<div class="shell">
+  <nav class="rail" aria-label="Legs of the build">
+    <div class="brand">
+      <span class="brand-mark">Flagship</span>
+      <span class="brand-sub">Deck log · 14 legs</span>
+    </div>
+    <div class="rail-list" id="rail"></div>
+  </nav>
+
+  <main id="main">
+
+    <!-- ============================ 00 ============================ -->
+    <section class="leg" id="leg-00" data-short="How to read this" data-title="How to read this log">
+      <header class="bearing">
+        <p class="eyebrow">Leg 00 · Orientation</p>
+        <h1>How to read this log</h1>
+        <p class="dek">A record of building Flagship — what we decided, what broke, and what the things we did are actually called.</p>
+      </header>
+
+      <p class="lede">Flagship is a daily flag-guessing game. Everyone in the world gets the same three flags each day, you get three attempts at each, and your streak multiplies your score. It is about 3,400 lines of TypeScript, and it took roughly a dozen distinct pushes to build.</p>
+
+      <p>This log walks those pushes in order. It is written for someone who wants to understand <em>why</em> each decision was made, not just what the final code looks like.</p>
+
+      <h3>Every leg has the same three beats</h3>
+
+      <p>You asked for the concept first and the vocabulary second, so each leg is built that way, and the three voices look different on the page so you can skim for the one you want:</p>
+
+      <div class="plain">
+        <h4>In plain words</h4>
+        <p>The idea with no jargon in it at all. If you only read these blocks, you will still understand how the app works.</p>
+      </div>
+
+      <div class="bug">
+        <div class="bug-row sym">
+          <div class="k">Symptom</div>
+          <div class="v">What we actually saw go wrong — the visible misbehaviour, before anyone knew the cause.</div>
+        </div>
+        <div class="bug-row">
+          <div class="k">Cause</div>
+          <div class="v">The real reason, which was usually not the obvious one.</div>
+        </div>
+        <div class="bug-row fix">
+          <div class="k">Fix</div>
+          <div class="v">What changed, and how we proved it changed.</div>
+        </div>
+      </div>
+
+      <div class="term">
+        <h4>The term for it</h4>
+        <p>The formal name, so that when a senior developer uses the word you know they are talking about the thing you already understand. <span class="word">This is the block to read the night before an interview.</span></p>
+      </div>
+
+      <h3>The shape of the thing</h3>
+
+      <div class="stat-strip">
+        <div class="stat"><span class="stat-v">3,363</span><span class="stat-k">lines of TS/TSX</span></div>
+        <div class="stat"><span class="stat-v">195</span><span class="stat-k">countries</span></div>
+        <div class="stat"><span class="stat-v">41</span><span class="stat-k">source files</span></div>
+        <div class="stat"><span class="stat-v">175 kB</span><span class="stat-k">shipped, gzipped</span></div>
+      </div>
+
+      <p>One more thing worth saying up front. Almost every hard bug in this log had a cause in a different place from its symptom. The button that turned white had nothing to do with the button. The menu that flew off the screen had nothing to do with the menu. That gap — between where a problem <em>appears</em> and where it <em>lives</em> — is most of what debugging experience actually is.</p>
+    </section>
+
+    <!-- ============================ 01 ============================ -->
+    <section class="leg" id="leg-01" data-short="The scaffold" data-title="The scaffold" hidden>
+      <header class="bearing">
+        <p class="eyebrow">Leg 01 · Foundations</p>
+        <h2>The scaffold</h2>
+        <p class="dek">Choosing the tools before there is anything to build with them.</p>
+      </header>
+
+      <h4>Before we started</h4>
+      <p>The question at the beginning of any project is not "which framework" but "what does this thing actually have to do?" Flagship has to: show a flag, take a guess, keep score, remember you tomorrow, and work on a phone with bad reception. Nothing about that needs a server rendering pages. It is a small, interactive, self-contained app.</p>
+
+      <p>That answer picks the tools for you.</p>
+
+      <div class="plain">
+        <h4>In plain words</h4>
+        <p>Browsers only really understand HTML, CSS and JavaScript. We wanted to write in a nicer language and split the code across forty files, so we needed a program that takes all our files and squashes them into something a browser can load quickly. That program is <strong>Vite</strong>. It also watches your files while you work and updates the page instantly when you save.</p>
+      </div>
+
+      <p>The stack, and the actual reason for each piece:</p>
+
+      <div class="measured">
+        <table>
+          <caption>Stack and rationale</caption>
+          <thead>
+            <tr><th>Piece</th><th>Why this one</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Vite</strong></td><td>Instant dev server, one command to produce a deployable folder. No server-side rendering needed for a game with no SEO surface.</td></tr>
+            <tr><td><strong>React 18</strong></td><td>The screen is a function of the game state. React is the least surprising way to express that.</td></tr>
+            <tr><td><strong>TypeScript</strong></td><td>A country has a <code>code</code>, a <code>name</code>, a <code>tier</code>. Writing that down once means the editor catches a typo before the browser does.</td></tr>
+            <tr><td><strong>Tailwind v4</strong></td><td>Styles live next to the markup they style. v4 needs no config file — the design tokens go straight in the CSS.</td></tr>
+            <tr><td><strong>Motion</strong></td><td>Animation that survives a component unmounting, which plain CSS cannot do.</td></tr>
+            <tr><td><strong>Supabase</strong></td><td>A hosted Postgres with authentication attached. Accounts and a leaderboard without writing a backend.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The build order mattered as much as the choices. The plan sequenced it so that the app was <em>fully playable as a guest</em> before authentication, syncing, or any styling was attempted. That is deliberate: if you run out of time or energy, you want the thing that already exists to be a working game, not a beautifully-styled login screen with no game behind it.</p>
+
+      <div class="term">
+        <h4>The terms for it</h4>
+        <p><span class="word">Build tool</span> / <span class="word">bundler</span> — the program that turns many source files into few browser-ready ones. <span class="word">Transpiling</span> — converting TypeScript into JavaScript. <span class="word">Hot module replacement (HMR)</span> — swapping changed code into the running page without a refresh. <span class="word">Vertical slice</span> — building one complete path through the app end to end before widening, which is what "playable before pretty" describes.</p>
+      </div>
+    </section>
+
+    <!-- ============================ 02 ============================ -->
+    <section class="leg" id="leg-02" data-short="The data" data-title="The data" hidden>
+      <header class="bearing">
+        <p class="eyebrow">Leg 02 · Data</p>
+        <h2>When the data source is dead</h2>
+        <p class="dek">The plan named an API. The API no longer existed.</p>
+      </header>
+
+      <h4>Before we started</h4>
+      <p>A flag game needs a list of countries: name, two-letter code, flag image, capital, region, population. The plan said to fetch it from <code>restcountries.com</code> once at build time and save the result as a JSON file in the repo.</p>
+
+      <p>That instinct — fetch once, commit the result — is worth pausing on, because it is the single best decision in the data layer.</p>
+
+      <div class="plain">
+        <h4>In plain words</h4>
+        <p>There are two ways to get the country list. Ask a website for it <em>every time a player opens the game</em>, or ask once on your own machine, save the answer into the project, and ship that. The second way means the game still works if that website is slow, down, or gone. It also means the list can never change under you.</p>
+        <p>The first way is a dependency on someone else's uptime, forever. The second is a file.</p>
+      </div>
+
+      <p>Which turned out to be prophetic, because:</p>
+
+      <div class="bug">
+        <div class="bug-row sym">
+          <div class="k">Symptom</div>
+          <div class="v">The fetch script returned <code>{success: false}</code> for every request.</div>
+        </div>
+        <div class="bug-row">
+          <div class="k">Cause</div>
+          <div class="v">restcountries.com had shut down its free tiers. Versions 1 through 4 were dead; v5 required an account and an API key. The plan was written against an API that no longer existed.</div>
+        </div>
+        <div class="bug-row fix">
+          <div class="k">Fix</div>
+          <div class="v">
+            <p>Rebuild the dataset from its own upstream sources instead of a middleman:</p>
+            <ul>
+              <li><strong>mledoze/countries</strong> on GitHub — the dataset restcountries was itself built from</li>
+              <li><strong>World Bank API</strong> — current population figures</li>
+              <li><strong>flagcdn</strong> — flag images by country code</li>
+            </ul>
+            <p>The output shape is byte-for-byte what the plan specified, so nothing downstream knew the difference.</p>
+          </div>
+        </div>
+      </div>
+
+      <p>Because the failure was permanent and the reasoning would be invisible to anyone reading the script later, the explanation went into the file itself:</p>
+
+      <p class="path">scripts/fetch-countries.mjs</p>
+      <pre><code><span class="cm">// NOTE ON THE SOURCE: the plan called for restcountries.com/v3.1. That API
+// was shut down — v1..v4 now return {success:false} for every request, and
+// v5 requires an account API key. This script uses the same underlying
+// dataset restcountries was built from (mledoze/countries) plus World Bank
+// population, and produces the identical output shape the plan specifies.</span></code></pre>
+
+      <p>A comment that explains a <em>decision</em> is worth ten that explain syntax. The next person to open that file will otherwise waste an afternoon wondering why it doesn't use the obvious API.</p>
+
+      <h3>Difficulty came free</h3>
+
+      <p>Each country got a tier from 1 to 3, derived from population and land area — the reasoning being that people recognise flags of countries they hear about. The split landed at <strong>64 / 61 / 70</strong>, close enough to even that no hand-tuning was needed. Each daily round pulls one from each tier in order, so every day ramps from easy to hard.</p>
+
+      <div class="term">
+        <h4>The terms for it</h4>
+        <p><span class="word">Build-time data</span> versus <span class="word">runtime data</span> — resolved once when you build, versus fetched while the user waits. <span class="word">Vendoring</span> — committing a copy of an external dependency into your own repository so you control it. <span class="word">Upstream</span> — the original source a dataset or package derives from. <span class="word">Third-party dependency risk</span> — the thing that just bit us.</p>
+      </div>
+    </section>
+
+    <!-- ============================ 03 ============================ -->
+    <section class="leg" id="leg-03" data-short="Same flags for all" data-title="The same three flags for everyone" hidden>
+      <header class="bearing">
+        <p class="eyebrow">Leg 03 · Determinism</p>
+        <h2>The same three flags for everyone</h2>
+        <p class="dek">The trick at the heart of every daily puzzle game, and it needs no server.</p>
+      </header>
+
+      <h4>Before we started</h4>
+      <p>Everyone must get the same flags on the same day, or there is nothing to talk about and no reason to come back. The obvious solution is a server that decides each day's flags and hands them out. That means running a server, paying for it, and having the game break when it is down.</p>
+
+      <p>There is a much better way, and it is the single most elegant idea in this codebase.</p>
+
+      <div class="plain">
+        <h4>In plain words</h4>
+        <p>Computers can't really make random numbers. They run a formula that <em>looks</em> random. Feed the same starting number in and you get the same "random" sequence out — every time, on every device, forever.</p>
+        <p>So: turn today's date into a number. Use it as the starting number. Now every phone on earth independently calculates the same three flags, with no server and no coordination. Tomorrow's date gives a different number, and different flags.</p>
+      </div>
+
+      <p>Two small functions do all of it. The first turns the string <code>"2026-09-03"</code> into a number:</p>
+
+      <p class="path">src/lib/daily.ts</p>
+      <pre><code><span class="cm">/** FNV-1a, uint32. */</span>
+export function hashString(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i &lt; s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h &gt;&gt;&gt; 0;
+}</code></pre>
+
+      <p>The second takes that number and produces a repeatable stream of values between 0 and 1:</p>
+
+      <pre><code>export function mulberry32(seed: number): () =&gt; number {
+  let a = seed &gt;&gt;&gt; 0;
+  return function () {
+    a = (a + 0x6d2b79f5) &gt;&gt;&gt; 0;
+    let t = a;
+    t = Math.imul(t ^ (t &gt;&gt;&gt; 15), t | 1);
+    t ^= t + Math.imul(t ^ (t &gt;&gt;&gt; 7), t | 61);
+    return ((t ^ (t &gt;&gt;&gt; 14)) &gt;&gt;&gt; 0) / 4294967296;
+  };
+}</code></pre>
+
+      <p>And the whole daily-rounds feature is four lines:</p>
+
+      <pre><code>const POOLS = [byTier(1), byTier(2), byTier(3)];
+
+export function getDailyRounds(dateKey: string): string[] {
+  const rand = mulberry32(hashString(dateKey));
+  return POOLS.map((pool) =&gt; pool[Math.floor(rand() * pool.length)].code);
+}</code></pre>
+
+      <h3>The hidden requirement</h3>
+
+      <p>This only works if the pools are in <em>the same order</em> on every device. If one phone sorted the country list differently, the same seed would select a different country. So the data file is sorted by country code at generation time and never re-sorted at runtime. There is a comment in the source saying exactly that, because it is the kind of invariant someone breaks by accident six months later while adding a feature.</p>
+
+      <div class="term">
+        <h4>The terms for it</h4>
+        <p><span class="word">Deterministic</span> — same input, same output, always. <span class="word">Seeded PRNG</span> (pseudo-random number generator) — the formula above; <em>pseudo</em> is doing real work in that name. <span class="word">Hash function</span> — turns arbitrary data into a fixed-size number; FNV-1a is a fast non-cryptographic one. <span class="word">Invariant</span> — a condition the code assumes is always true, like the sort order. <span class="word">Pure function</span> — depends only on its arguments and touches nothing else, which is why this is trivial to test.</p>
+      </div>
+    </section>
+
+    <!-- ============================ 04 ============================ -->
+    <section class="leg" id="leg-04" data-short="Score & storage" data-title="Scoring, streaks, and not losing progress" hidden>
+      <header class="bearing">
+        <p class="eyebrow">Leg 04 · State</p>
+        <h2>Scoring, streaks, and not losing progress</h2>
+        <p class="dek">Rules as plain functions, and a save file that survives you closing the tab mid-round.</p>
+      </header>
+
+      <h4>Before we started</h4>
+      <p>Game rules and screen drawing are two different jobs, and mixing them is how codebases rot. So the rules were written first, as ordinary functions with no React in them at all — no components, no hooks, nothing about the display. They take numbers and return numbers.</p>
+
+      <p class="path">src/lib/scoring.ts</p>
+      <pre><code>export const POINTS_BY_ATTEMPT = [5, 3, 1]; <span class="cm">// index = attempt - 1</span>
+
+<span class="cm">/** Streak includes today. */</span>
+export function multiplierFor(streak: number): number {
+  if (streak &gt;= 30) return 2;
+  if (streak &gt;= 14) return 1.75;
+  if (streak &gt;= 7)  return 1.5;
+  if (streak &gt;= 4)  return 1.25;
+  if (streak &gt;= 2)  return 1.1;
+  return 1;
+}</code></pre>
+
+      <p>You can read the entire economy of the game in twelve lines, and you can test it without rendering anything.</p>
+
+      <h3>Local first, account second</h3>
+
+      <div class="plain">
+        <h4>In plain words</h4>
+        <p>The game saves everything to your own browser's storage the instant it happens. No account needed, no network needed. Signing in is a <em>bonus</em> that copies your history to a server so it follows you to another device.</p>
+        <p>Built the other way round — server first, browser as a cache — the game would be unplayable on a train.</p>
+      </div>
+
+      <p>Two details make this actually robust rather than nominally robust:</p>
+
+      <p><strong>The save file has a version number.</strong> If the shape of the saved data ever changes, old saves would crash the new code. So the version is stored alongside the data; on load, a mismatch wipes and starts fresh rather than trying to read a structure that no longer exists.</p>
+
+      <p><strong>Corrupt data is expected, not exceptional.</strong> Anyone can open devtools and put garbage in local storage. Reading it is wrapped so that unparseable data resets the save instead of white-screening the app. Both paths are covered by tests — <em>"corrupt localStorage resets instead of white-screening"</em> is a named, passing check.</p>
+
+      <p>Progress is written after every single guess and again when the tab is hidden, so closing the browser mid-round loses nothing. The resume logic was tested at four separate points: mid-round-one, after a wrong guess, during a reveal, and after the third round but before the results screen renders.</p>
+
+      <div class="term">
+        <h4>The terms for it</h4>
+        <p><span class="word">Local-first</span> (or <span class="word">offline-first</span>) — the device is the source of truth, the server is the backup. <span class="word">Separation of concerns</span> — rules and rendering in different files. <span class="word">Schema versioning</span> and <span class="word">migration</span> — the version number on the save file. <span class="word">Defensive parsing</span> — assuming stored data is hostile. <span class="word">Graceful degradation</span> — full function without a network.</p>
+      </div>
+    </section>
+
+    <!-- ============================ 05 ============================ -->
+    <section class="leg" id="leg-05" data-short="The picker" data-title="Two hundred countries in a text box" hidden>
+      <header class="bearing">
+        <p class="eyebrow">Leg 05 · Search</p>
+        <h2>Two hundred countries in a text box</h2>
+        <p class="dek">The most-used control in the app, and the one with the subtlest bug.</p>
+      </header>
+
+      <h4>Before we started</h4>
+      <p>Every guess goes through one control, so it gets more use than everything else combined. It has to handle real typing: abbreviations (<em>uae</em>), alternative names (<em>holland</em>), accents (<em>côte d'ivoire</em>), and partial words.</p>
+
+      <p>The approach: normalise everything (lowercase, strip accents), give countries a list of aliases, and rank matches so the likeliest is first.</p>
+
+      <div class="plain">
+        <h4>In plain words</h4>
+        <p>Not all matches are equal. If you type "ind", <em>India</em> should beat <em>British Indian Ocean Territory</em> — both contain the letters, but one <em>starts</em> with them. So matches get sorted into buckets: names that start with what you typed come before names that merely contain it.</p>
+      </div>
+
+      <p>Then this happened:</p>
+
+      <div class="bug">
+        <div class="bug-row sym">
+          <div class="k">Symptom</div>
+          <div class="v">Typing <code>uk</code> put <strong>Ukraine</strong> at the top instead of the United Kingdom.</div>
+        </div>
+        <div class="bug-row">
+          <div class="k">Cause</div>
+          <div class="v">"Ukraine" literally starts with the letters <em>u-k</em>, so it landed in the high-priority "starts with" bucket. "uk" for the United Kingdom was only an alias, which ranked lower. The ranking was working perfectly and producing the wrong answer.</div>
+        </div>
+        <div class="bug-row fix">
+          <div class="k">Fix</div>
+          <div class="v">Add a bucket above "starts with": an alias typed <em>in full</em> wins outright. "uk" is a complete alias for the UK, so it beats a prefix match on Ukraine. A partial alias still ranks normally.</div>
+        </div>
+      </div>
+
+      <p class="path">src/lib/search.ts</p>
+      <pre><code>const exactName: Country[] = [];
+const exactAlias: Country[] = [];
+const starts: Country[] = [];
+const contains: Country[] = [];
+
+<span class="cm">// An alias typed in full wins outright, otherwise "uk" lands on Ukraine.</span>
+if (key === q) { exactName.push(c); continue; }
+if (aliases?.includes(q)) { exactAlias.push(c); continue; }
+<span class="cm">// ...</span>
+
+return exactName.concat(exactAlias, starts, contains);</code></pre>
+
+      <p>One alias was also deleted rather than fixed: <code>ZA: ["sa"]</code> for South Africa. "sa" is a plausible abbreviation for Saudi Arabia too, and an ambiguous shortcut that silently picks one is worse than no shortcut at all — you lose an attempt to a guess you did not make.</p>
+
+      <div class="term">
+        <h4>The terms for it</h4>
+        <p><span class="word">Normalisation</span> — reducing input to a canonical form before comparing. <span class="word">Ranking</span> / <span class="word">relevance tiers</span> — the buckets. <span class="word">Prefix match</span> versus <span class="word">substring match</span>. <span class="word">Fuzzy search</span> — the general family this belongs to. <span class="word">Stable sort</span> — why each bucket stays alphabetical: the input list already was, and concatenating preserves it.</p>
+      </div>
+    </section>
+
+    <!-- ============================ 06 ============================ -->
+    <section class="leg" id="leg-06" data-short="Accounts" data-title="Accounts, and who is allowed to read what" hidden>
+      <header class="bearing">
+        <p class="eyebrow">Leg 06 · Backend</p>
+        <h2>Accounts, and who is allowed to read what</h2>
+        <p class="dek">A leaderboard is a database that strangers read. That is a security question, not a feature.</p>
+      </header>
+
+      <h4>Before we started</h4>
+      <p>Adding accounts introduces the first genuinely dangerous surface in the project. Up to here, the worst a malicious user could do was cheat their own score. Now there is a shared database.</p>
+
+      <p>Supabase puts a real Postgres database behind a JavaScript client — the browser talks to the database more or less directly. That is only safe because of one mechanism.</p>
+
+      <div class="plain">
+        <h4>In plain words</h4>
+        <p>Normally a server sits between the browser and the database and decides what each person is allowed to see. Here there is no such server. Instead, the <em>database itself</em> holds the rules: "you may read your own rows, and nobody else's."</p>
+        <p>The rules live on the table, so it does not matter what the browser asks for. A request for someone else's data returns nothing, because the database refuses, not because the app was polite enough not to ask.</p>
+      </div>
+
+      <p>This immediately created a problem that teaches the whole concept:</p>
+
+      <div class="bug">
+        <div class="bug-row sym">
+          <div class="k">Symptom</div>
+          <div class="v">With "you can only read your own rows" in place, the leaderboard was empty. Correctly — a leaderboard is by definition other people's rows.</div>
+        </div>
+        <div class="bug-row">
+          <div class="k">Cause</div>
+          <div class="v">The rule is right for the table and wrong for this one feature. Loosening it would expose every column of every player's record to satisfy a page that needs two.</div>
+        </div>
+        <div class="bug-row fix">
+          <div class="k">Fix</div>
+          <div class="v">A <em>view</em> — a saved query that runs with the privileges of whoever defined it rather than whoever calls it. It exposes exactly username and score, nothing else. The underlying table stays locked. The public gets a window, not a door.</div>
+        </div>
+      </div>
+
+      <p>The same shape solved usernames. "Is this name taken?" cannot be answered by letting the browser read the users table. Instead a small database function takes a name and returns <strong>only a boolean</strong>. You learn whether it is free; you learn nothing about who has it.</p>
+
+      <h3>The key that is supposed to be public</h3>
+
+      <p>Supabase gives you two keys, and the difference matters more than almost anything else here:</p>
+
+      <div class="measured">
+        <table>
+          <caption>Supabase keys</caption>
+          <thead><tr><th>Key</th><th>Where it goes</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td><code>anon</code></td><td>In the browser bundle. Public by design.</td><td>It identifies the project, not a person. Every rule above still applies to it. Anyone can read it out of the JavaScript, and that is fine.</td></tr>
+            <tr><td><code>service_role</code></td><td class="was">Nowhere in this project. Ever.</td><td>It <em>bypasses every rule</em>. In a browser bundle it hands the entire database to anyone who opens devtools.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Worth internalising: the anon key being visible is not a leak, and treating it as one leads people to hide it in ways that break the app. The security is the row rules, not the secrecy of the key.</p>
+
+      <div class="bug">
+        <div class="bug-row sym">
+          <div class="k">Symptom</div>
+          <div class="v">Sign-up appeared to succeed, then the app behaved as though nobody was logged in.</div>
+        </div>
+        <div class="bug-row">
+          <div class="k">Cause</div>
+          <div class="v">The code checked <code>data.user?.id</code>. With email confirmation switched on, Supabase returns <em>a user but no session</em> — the account exists, but nobody is signed in until the email link is clicked. A user object is not proof of a login.</div>
+        </div>
+        <div class="bug-row fix">
+          <div class="k">Fix</div>
+          <div class="v">Check <code>data.session?.user?.id</code> instead. The session is the thing that means "signed in right now".</div>
+        </div>
+      </div>
+
+      <div class="term">
+        <h4>The terms for it</h4>
+        <p><span class="word">Row Level Security (RLS)</span> — per-row access rules enforced by the database. <span class="word">Policy</span> — one such rule. <span class="word">SECURITY DEFINER</span> — the view/function property that makes it run with its creator's privileges. <span class="word">RPC</span> — calling a database function directly. <span class="word">Principle of least privilege</span> — the boolean-only username check. <span class="word">Session</span> versus <span class="word">user</span> — the bug above.</p>
+      </div>
+    </section>
+
+    <!-- ============================ 07 ============================ -->
+    <section class="leg" id="leg-07" data-short="Shipping" data-title="Shipping it" hidden>
+      <header class="bearing">
+        <p class="eyebrow">Leg 07 · Deploy</p>
+        <h2>Shipping it</h2>
+        <p class="dek">From a folder on your laptop to a URL anyone can open.</p>
+      </header>
+
+      <div class="plain">
+        <h4>In plain words</h4>
+        <p>Running <code>npm run build</code> produces a folder of plain HTML, CSS and JavaScript. Hosting is just putting that folder on a machine that answers web requests. Vercel does one extra useful thing: it watches your GitHub repository, and every time you push, it rebuilds and republishes automatically.</p>
+      </div>
+
+      <p>The one piece that does not come from the repository is configuration. The Supabase URL and key are read from environment variables — values supplied from outside the code — so they are set in Vercel's dashboard rather than committed. In this project they happen to be safe to publish anyway, but the habit is what matters: <strong>configuration is not source code</strong>, and the day you have a genuinely secret value you want that separation already in place.</p>
+
+      <p>Vite requires such variables to be prefixed <code>VITE_</code> before it will expose them to browser code. That prefix is a safety catch — it forces you to state, explicitly, that a value is meant to be public.</p>
+
+      <div class="term">
+        <h4>The terms for it</h4>
+        <p><span class="word">Static site</span> — no server-side computation per request. <span class="word">CI/CD</span> — the push-triggers-build-and-deploy pipeline. <span class="word">Environment variable</span>. <span class="word">Twelve-factor config</span> — the principle that configuration lives in the environment, not the codebase. <span class="word">Preview deployment</span> — the throwaway URL Vercel builds for each branch.</p>
+      </div>
+    </section>
+
+    <!-- ============================ 08 ============================ -->
+    <section class="leg" id="leg-08" data-short="The white button" data-title="The button that turned white on white" hidden>
+      <header class="bearing">
+        <p class="eyebrow">Leg 08 · CSS</p>
+        <h2>The button that turned white on white</h2>
+        <p class="dek">The best bug in the project, because the cause is a rule most people have never heard of.</p>
+      </header>
+
+      <h4>Before we started</h4>
+      <p>With the game working, attention turned to how it looked — and to a request to ignore the plan's design section entirely in favour of something with more atmosphere. Then the main call-to-action went invisible.</p>
+
+      <div class="bug">
+        <div class="bug-row sym">
+          <div class="k">Symptom</div>
+          <div class="v">
+            <p>The "Play today" button rendered white text on a white background. The utility classes setting its colour were present in the markup and simply not applying.</p>
+            <pre><code>color:    rgb(237, 239, 243)  <span class="hl">← same</span>
+bgcolor:  rgb(237, 239, 243)  <span class="hl">← same</span>
+fontSize: 16px   <span class="cm">(expected 17)</span>
+weight:   400    <span class="cm">(expected 500)</span></code></pre>
+          </div>
+        </div>
+        <div class="bug-row">
+          <div class="k">Cause</div>
+          <div class="v">
+            <p>A plain reset rule in the stylesheet:</p>
+            <pre><code>button { font: inherit; color: inherit; }</code></pre>
+            <p>In Tailwind v4 every utility class lives inside a <em>cascade layer</em>. The rule that catches people: <strong>any CSS outside a layer beats all CSS inside one</strong> — regardless of specificity, regardless of source order. A bare one-word selector was outranking every utility in the framework.</p>
+          </div>
+        </div>
+        <div class="bug-row fix">
+          <div class="k">Fix</div>
+          <div class="v">Move the resets into <code>@layer base</code>. Now they are layered too, they sit below the utilities, and normal cascade rules resume.</div>
+        </div>
+      </div>
+
+      <div class="plain">
+        <h4>In plain words</h4>
+        <p>CSS layers are a way of saying "this whole group of styles is lower priority than that group" — useful for keeping a framework from fighting your own code.</p>
+        <p>The counterintuitive part is what happens to styles in <em>no</em> group at all. You would guess they are neutral. In fact they win over everything in every group. Opting out of the system does not make you a citizen; it makes you king.</p>
+      </div>
+
+      <p>A second, smaller v4 change surfaced the same week: buttons stopped showing a pointer cursor on hover, because v4's reset no longer sets <code>cursor: pointer</code> on them. The fix was trivial; finding it was not, because "the buttons don't feel like buttons" is a feeling, not an error message. We audited all 200 interactive elements on the page to be sure none were missed.</p>
+
+      <div class="term">
+        <h4>The terms for it</h4>
+        <p><span class="word">Cascade layers</span> (<code>@layer</code>) — the mechanism. <span class="word">Unlayered styles</span> — the ones that outrank everything. <span class="word">Specificity</span> — the usual tie-breaker, which layers override entirely. <span class="word">Preflight</span> / <span class="word">CSS reset</span> — the baseline styles a framework applies. <span class="word">Computed style</span> — what the browser actually resolved, which is what you inspect when the markup looks right and the pixels are wrong.</p>
+      </div>
+    </section>
+
+    <!-- ============================ 09 ============================ -->
+    <section class="leg" id="leg-09" data-short="Small numbers" data-title="The numbers that looked wrong" hidden>
+      <header class="bearing">
+        <p class="eyebrow">Leg 09 · Typography</p>
+        <h2>The numbers that looked wrong</h2>
+        <p class="dek">A report of "too small" that was not about size at all.</p>
+      </header>
+
+      <div class="bug">
+        <div class="bug-row sym">
+          <div class="k">Symptom</div>
+          <div class="v">"The numbers are a little smaller to look at." Measuring them found the font size correct and matching the surrounding text.</div>
+        </div>
+        <div class="bug-row">
+          <div class="k">Cause</div>
+          <div class="v">The display face, IM Fell English, uses <em>old-style figures</em> — digits designed to sit at the height of lowercase letters, with some descending below the baseline. In a book they are beautiful. In <code>FLAG 1 OF 3</code>, set in capitals, the 1 and 3 sit visibly low and small: <code>FLAG ₁ OF ₃</code>. Nothing was smaller. The digits were a different <em>kind</em> of digit.</div>
+        </div>
+        <div class="bug-row fix">
+          <div class="k">Fix</div>
+          <div class="v">
+            <p>Any label containing a number gets set in Archivo, whose figures are uniform and full-height.</p>
+            <pre><code><span class="cm">/* Same ledger treatment, but in Archivo — IM Fell's old-style
+   figures turn "Flag 1 of 3" into "Flag ₁ of ₃". */</span>
+.ledger-num {
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <p>This one recurred. It was diagnosed and fixed for one label, then appeared again later in a different component that had used the original class. The lesson is that a fix expressed as a <em>reusable class</em> only helps where someone remembers to use it — and the more durable version of this fix would have been to change the font stack for all numeric labels at once.</p>
+
+      <div class="plain">
+        <h4>In plain words</h4>
+        <p>When a person says something looks wrong, they are reliable about the <em>symptom</em> and unreliable about the <em>cause</em> — and that is not a criticism, it is just what it is like to look at a screen. "Too small" was a completely accurate description of the experience and a completely wrong diagnosis. Measure before you act on the stated cause.</p>
+      </div>
+
+      <div class="term">
+        <h4>The terms for it</h4>
+        <p><span class="word">Old-style</span> (text) <span class="word">figures</span> versus <span class="word">lining figures</span>. <span class="word">Tabular</span> versus <span class="word">proportional figures</span> — tabular ones all share a width so columns align. <span class="word">x-height</span>, <span class="word">baseline</span>, <span class="word">descender</span>. <span class="word">font-variant-numeric</span> — the CSS property that controls all of this when a font offers both sets.</p>
+      </div>
+    </section>
+
+    <!-- ============================ 10 ============================ -->
+    <section class="leg" id="leg-10" data-short="Flying menu" data-title="The menu that flew off the screen" hidden>
+      <header class="bearing">
+        <p class="eyebrow">Leg 10 · Layout</p>
+        <h2>The menu that flew off the screen</h2>
+        <p class="dek">"Fixed to the screen" turns out to have an asterisk.</p>
+      </header>
+
+      <div class="bug">
+        <div class="bug-row sym">
+          <div class="k">Symptom</div>
+          <div class="v">On a phone, the country picker's sheet — pinned to the bottom of the screen — rendered at <code>top: -159px</code>, above the visible area entirely.</div>
+        </div>
+        <div class="bug-row">
+          <div class="k">Cause</div>
+          <div class="v">
+            <p><code>position: fixed</code> normally means "position me against the browser window". But if <em>any ancestor</em> has a <code>transform</code>, a <code>perspective</code>, or <code>transform-style: preserve-3d</code>, that ancestor silently becomes the reference frame instead.</p>
+            <p>The flag card flips in 3D on reveal. The picker was nested inside that flip. So "fixed to the screen" quietly meant "fixed to the flipping card".</p>
+          </div>
+        </div>
+        <div class="bug-row fix">
+          <div class="k">Fix</div>
+          <div class="v">Move the picker out of the flip entirely — and leave a comment at <em>both</em> ends, because the two pieces of code look unrelated and someone will otherwise nest them again.</div>
+        </div>
+      </div>
+
+      <p class="path">src/components/Round.tsx</p>
+      <pre><code><span class="cm">{/* Outside the flip on purpose — `perspective` and `preserve-3d` both
+    make an element the containing block for position: fixed, which
+    would drag the picker's mobile sheet off the viewport. */}</span></code></pre>
+
+      <p>The paired comment sits above the flip itself, warning against putting anything between it and the picker. A bug whose cause is <em>action at a distance</em> needs its warning at the distant end, not only at the scene of the crime.</p>
+
+      <h3>Then the keyboard opened</h3>
+
+      <div class="plain">
+        <h4>In plain words</h4>
+        <p>A phone has two ideas of "the screen". One is the whole window, which does not change when the on-screen keyboard appears. The other is the part you can actually see, which shrinks by the height of the keyboard.</p>
+        <p>"Stick to the bottom" uses the first one. So the sheet dutifully stuck itself to the bottom of the window — underneath the keyboard, invisible.</p>
+      </div>
+
+      <p>The browser exposes the visible one separately. The difference between the two is exactly how much the keyboard is covering:</p>
+
+      <p class="path">src/hooks/useKeyboardInset.ts</p>
+      <pre><code>const covered = window.innerHeight - vv.height - vv.offsetTop;
+setInset(covered &gt; 24 ? Math.round(covered) : 0);</code></pre>
+
+      <p>The <code>&gt; 24</code> is not arbitrary: browsers report small fluctuations of a pixel or two, and treating those as a keyboard would make the sheet twitch.</p>
+
+      <div class="term">
+        <h4>The terms for it</h4>
+        <p><span class="word">Containing block</span> — the box an absolutely- or fixed-positioned element is measured against. <span class="word">Stacking context</span> — a related trap the same properties create. <span class="word">Layout viewport</span> versus <span class="word">visual viewport</span> — the two screens. <span class="word">visualViewport API</span> — how you read the second one. <span class="word">Action at a distance</span> — a cause far from its effect.</p>
+      </div>
+    </section>
+
+    <!-- ============================ 11 ============================ -->
+    <section class="leg" id="leg-11" data-short="No room" data-title="When there is genuinely not enough room" hidden>
+      <header class="bearing">
+        <p class="eyebrow">Leg 11 · Constraints</p>
+        <h2>When there is genuinely not enough room</h2>
+        <p class="dek">Three attempts at one layout, and a lesson about which units know what.</p>
+      </header>
+
+      <p>With the sheet correctly above the keyboard, it collapsed to a sliver — just a search box, no list. The formula sizing it was:</p>
+
+      <pre><code>maxHeight: calc(100svh - keyboard - 320px)</code></pre>
+
+      <div class="bug">
+        <div class="bug-row sym">
+          <div class="k">Symptom</div>
+          <div class="v">On the reported phone that resolves to <strong>44px</strong> — the input and nothing else. On a taller test device it left about 200px and looked fine, which is exactly why it shipped.</div>
+        </div>
+        <div class="bug-row">
+          <div class="k">Cause</div>
+          <div class="v"><code>svh</code> is the viewport minus browser chrome — <em>it knows nothing about the keyboard</em>. So the keyboard was subtracted from a figure that had not accounted for it, and then another 320px was taken off for the flag. The keyboard was effectively counted twice.</div>
+        </div>
+        <div class="bug-row fix">
+          <div class="k">Fix</div>
+          <div class="v">Size against the visual viewport — the measurement that already excludes the keyboard — instead of mixing two unit systems that disagree about what a screen is.</div>
+        </div>
+      </div>
+
+      <p>That fixed the collapse and revealed the real problem: the sheet now had a sensible height and sat directly on top of the flag. Measuring the page showed why nothing could simply move out of the way:</p>
+
+      <pre><code>docH: 711  ===  innerH: 711   <span class="hl">the phone layout cannot scroll at all</span></code></pre>
+
+      <p>So the arithmetic was fixed and brutal. Around <strong>375px</strong> visible with the keyboard up, of which the flag is 180. The chrome above it — a 76px header and a 45px label — was consuming the rest.</p>
+
+      <div class="measured">
+        <table>
+          <caption>Reclaiming the space</caption>
+          <thead><tr><th>Element</th><th class="num">Before</th><th class="num">After</th></tr></thead>
+          <tbody>
+            <tr><td>App header</td><td class="num was">76px</td><td class="num now">folded away</td></tr>
+            <tr><td>Gap above flag</td><td class="num was">20px</td><td class="num now">8px</td></tr>
+            <tr><td>Flag</td><td class="num was">covered</td><td class="num now">180px, visible</td></tr>
+            <tr><td>Sheet</td><td class="num was">over the flag</td><td class="num now">155px below it</td></tr>
+            <tr><td>Rows of results</td><td class="num was">0</td><td class="num now">2</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Two decisions inside that fix are worth more than the fix:</p>
+
+      <p><strong>Measure, don't assume.</strong> Rather than hard-coding "the flag ends at 225px", the round measures the flag's actual bottom edge and hands the picker whatever is left. Constants like that drift the moment someone changes the header; a measurement cannot.</p>
+
+      <p><strong>Name the cost out loud.</strong> The instruction had been "do not make the flag smaller". Honouring it means the list gets two rows and not four. That is a real cost, and the right move was to ship the version that respected the constraint and then say plainly what it cost — rather than quietly overriding the instruction, or pretending two rows was the ideal outcome.</p>
+
+      <div class="term">
+        <h4>The terms for it</h4>
+        <p><span class="word">Viewport units</span> — <code>vh</code>, <code>svh</code>, <code>lvh</code>, <code>dvh</code>, each measuring a different idea of "the screen". <span class="word">Layout thrash</span> — the reason measurement is deferred a frame. <span class="word">Progressive disclosure</span> — chrome that steps aside when space is scarce. <span class="word">Design constraint</span> — a rule you honour and cost out, rather than silently break.</p>
+      </div>
+    </section>
+
+    <!-- ============================ 12 ============================ -->
+    <section class="leg" id="leg-12" data-short="Real facts" data-title="Real facts, and the database we didn't build" hidden>
+      <header class="bearing">
+        <p class="eyebrow">Leg 12 · Architecture</p>
+        <h2>Real facts, and the database we didn't build</h2>
+        <p class="dek">The best architectural decision in the project was to delete most of the architecture.</p>
+      </header>
+
+      <h4>Before we started</h4>
+      <p>The request was: fetch fresh facts about each day's countries, save them to the database, and serve them from there. A reasonable design, and it implies a fair amount of machinery — a scheduled job, a server-side function, an API key, a shared table.</p>
+
+      <p>But the machinery only exists to solve specific problems, so it is worth asking which ones actually apply once you pick a source.</p>
+
+      <div class="measured">
+        <table>
+          <caption>Why a server is usually needed — and whether it was here</caption>
+          <thead><tr><th>Reason for a server</th><th>With Wikipedia</th></tr></thead>
+          <tbody>
+            <tr><td>Hide an API key</td><td class="now">Not needed — the API is keyless</td></tr>
+            <tr><td>Get around browser cross-origin rules</td><td class="now">Not needed — the API allows browser calls</td></tr>
+            <tr><td>Stop users poisoning shared content</td><td class="now">Not needed — nothing is shared to poison</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>That third row is the interesting one. The vandalism risk <em>only existed because of the shared table</em>. A design where every browser fetches its own facts does not have that attack surface — the problem was created by the proposed solution.</p>
+
+      <div class="plain">
+        <h4>In plain words</h4>
+        <p>Each browser asks Wikipedia for the three countries directly, then keeps the answers in its own storage under today's date. Tomorrow is a different date, so it fetches again — once a day, three requests.</p>
+        <p>The cost is that each visitor makes three requests instead of everyone sharing one fetch. Wikipedia serves billions. This is noise.</p>
+      </div>
+
+      <p>What we avoided by not building it: deploying a scheduled function, wiring a cron job, and — the real hazard — <strong>reimplementing the daily-seed logic in a second language</strong>, where any drift between the two would silently pair the wrong fact with the wrong flag.</p>
+
+      <h3>The part that needed real care</h3>
+
+      <p>Wikipedia article titles are not country names. Left alone, this feature would have confidently told players about a US state, an island, and a river:</p>
+
+      <div class="measured">
+        <table>
+          <caption>Ambiguous titles, and where they would have landed</caption>
+          <thead><tr><th>Country</th><th>Naive title</th><th>Correct title</th></tr></thead>
+          <tbody>
+            <tr><td>Georgia</td><td class="was">the US state</td><td>Georgia (country)</td></tr>
+            <tr><td>Ireland</td><td class="was">the island</td><td>Republic of Ireland</td></tr>
+            <tr><td>Niger</td><td class="was">the river</td><td>Niger</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>Twenty titles are mapped explicitly, and a script checks all of them plus eight controls actually resolve to a country article — <strong>28 / 28</strong>. The check tests the <em>content</em>, not just that a page exists: a summary that doesn't describe a place fails.</p>
+
+      <p>Finally, the whole feature is additive. If Wikipedia is unreachable, every fetch returns null and the game falls back to its built-in fact templates. Verified by blocking the domain outright: six requests aborted, the game showed <em>"Kabul is the capital, and about 43.8M people live in Afghanistan"</em>, offered no link, cached nothing, and threw no errors. Hints were deliberately left offline-only and deterministic — they are gameplay, and gameplay must never depend on a network.</p>
+
+      <div class="term">
+        <h4>The terms for it</h4>
+        <p><span class="word">YAGNI</span> ("you aren't gonna need it") — the principle behind not building the table. <span class="word">Attack surface</span> — what the shared table would have added. <span class="word">CORS</span> — the cross-origin rules that usually force a proxy. <span class="word">Cache key</span> and <span class="word">invalidation</span> — the date. <span class="word">Graceful degradation</span> and <span class="word">progressive enhancement</span> — the fallback. <span class="word">Single source of truth</span> — why duplicating the seed logic was the real danger.</p>
+      </div>
+    </section>
+
+    <!-- ============================ 13 ============================ -->
+    <section class="leg" id="leg-13" data-short="Proving it" data-title="How we knew any of it worked" hidden>
+      <header class="bearing">
+        <p class="eyebrow">Leg 13 · Verification</p>
+        <h2>How we knew any of it worked</h2>
+        <p class="dek">Including the time the tests were wrong, and the time the edits silently did nothing.</p>
+      </header>
+
+      <div class="plain">
+        <h4>In plain words</h4>
+        <p>Rather than clicking through the app by hand after every change, a script drives a real browser: it opens the page, clicks things, reads what is on screen, and reports pass or fail. Because it is a real browser, it catches things that only happen in one — layout, fonts, animation, offline behaviour.</p>
+      </div>
+
+      <div class="measured">
+        <table>
+          <caption>Suites at the end of the build</caption>
+          <thead><tr><th>Suite</th><th>Covers</th><th class="num">Result</th></tr></thead>
+          <tbody>
+            <tr><td>Main</td><td>Gameplay, streaks, storage, offline, reduced motion</td><td class="num">93 / 93</td></tr>
+            <tr><td>Mobile sheet</td><td>Keyboard, chrome folding, desktop untouched</td><td class="num">31 / 31</td></tr>
+            <tr><td>Wikipedia titles</td><td>Ambiguous country articles</td><td class="num">28 / 28</td></tr>
+            <tr><td>Daily facts</td><td>Caching, fallback with the domain blocked</td><td class="num">10 / 10</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Two failures worth more than the passes</h3>
+
+      <div class="bug">
+        <div class="bug-row sym">
+          <div class="k">Symptom</div>
+          <div class="v">Several tests failed after a change that was, in fact, correct.</div>
+        </div>
+        <div class="bug-row">
+          <div class="k">Cause</div>
+          <div class="v">The tests were wrong. They compared against text before CSS uppercased it, hard-coded a screen height of 780 when the browser reported 793, and expected a blur value that had been intentionally changed. A test asserting yesterday's truth fails loudly and points at the wrong file.</div>
+        </div>
+        <div class="bug-row fix">
+          <div class="k">Fix</div>
+          <div class="v">Assert against what the browser reports (<code>window.innerHeight</code>) rather than a number typed in once, and delete assertions describing behaviour that was deliberately removed.</div>
+        </div>
+      </div>
+
+      <div class="bug">
+        <div class="bug-row sym">
+          <div class="k">Symptom</div>
+          <div class="v">A script reported success while changing nothing. Four heading replacements never applied.</div>
+        </div>
+        <div class="bug-row">
+          <div class="k">Cause</div>
+          <div class="v">The search text had been normalised — double spaces collapsed — so it no longer matched the file. Find-and-replace with no match is not an error. It is silence.</div>
+        </div>
+        <div class="bug-row fix">
+          <div class="k">Fix</div>
+          <div class="v">
+            <p>Every editing script now asserts that each replacement matched exactly once before writing:</p>
+            <pre><code>assert s.count(old) == 1, (s.count(old), old[:60])</code></pre>
+            <p>This one line has caught real mistakes repeatedly since.</p>
+          </div>
+        </div>
+      </div>
+
+      <p>The general lesson: <strong>an operation that can quietly do nothing is more dangerous than one that fails</strong>. A crash tells you where to look. Silence lets you spend an hour debugging code that was never edited.</p>
+
+      <div class="term">
+        <h4>The terms for it</h4>
+        <p><span class="word">End-to-end (E2E) test</span> — driving the real app as a user. <span class="word">Regression suite</span> — the tests you re-run to prove old features still work. <span class="word">Headless browser</span> — a browser with no visible window. <span class="word">Flaky test</span> — one that fails for reasons unrelated to the code. <span class="word">Fail loudly</span> / <span class="word">fail fast</span> — the assertion above. <span class="word">Test fixture</span> — the seeded state a test starts from.</p>
+      </div>
+    </section>
+
+    <!-- ============================ 14 ============================ -->
+    <section class="leg" id="leg-14" data-short="Bearings" data-title="Bearings — the whole vocabulary" hidden>
+      <header class="bearing">
+        <p class="eyebrow">Leg 14 · Reference</p>
+        <h2>Bearings</h2>
+        <p class="dek">Every term in this log, in one place, with the plain-language version beside it.</p>
+      </header>
+
+      <div class="measured">
+        <table>
+          <caption>Glossary</caption>
+          <thead><tr><th>Term</th><th>What it actually means</th></tr></thead>
+          <tbody>
+            <tr><td>Deterministic</td><td>Same input, same output, every time. How everyone gets the same flags.</td></tr>
+            <tr><td>Seeded PRNG</td><td>A formula that produces random-looking numbers from a starting value.</td></tr>
+            <tr><td>Hash function</td><td>Turns any text into a number of fixed size.</td></tr>
+            <tr><td>Pure function</td><td>Uses only its arguments, changes nothing else. Trivially testable.</td></tr>
+            <tr><td>Invariant</td><td>Something the code assumes is always true. Break it and things fail far away.</td></tr>
+            <tr><td>Local-first</td><td>The device is the source of truth; the server is a backup.</td></tr>
+            <tr><td>Schema versioning</td><td>Stamping saved data with a version so old saves can be detected.</td></tr>
+            <tr><td>Row Level Security</td><td>The database enforces who can read which rows, not the app.</td></tr>
+            <tr><td>SECURITY DEFINER</td><td>A view or function that runs with its creator's permissions.</td></tr>
+            <tr><td>Least privilege</td><td>Give the caller exactly what it needs and nothing more.</td></tr>
+            <tr><td>Session vs user</td><td>A user can exist without being signed in. Only a session means logged in.</td></tr>
+            <tr><td>Cascade layer</td><td>A priority group for CSS. Unlayered styles beat all of them.</td></tr>
+            <tr><td>Specificity</td><td>The usual CSS tie-breaker — which layers override entirely.</td></tr>
+            <tr><td>Containing block</td><td>The box a positioned element measures itself against.</td></tr>
+            <tr><td>Layout vs visual viewport</td><td>The whole window versus the part not covered by the keyboard.</td></tr>
+            <tr><td>Old-style figures</td><td>Digits that sit at lowercase height. Look small next to capitals.</td></tr>
+            <tr><td>Tabular figures</td><td>Digits of equal width, so columns of numbers line up.</td></tr>
+            <tr><td>CORS</td><td>Browser rules about which sites your page may call directly.</td></tr>
+            <tr><td>Rate limiting (429)</td><td>"You are asking too fast." Slow down; do not retry immediately.</td></tr>
+            <tr><td>AbortController</td><td>Cancels an in-flight request when it is no longer needed.</td></tr>
+            <tr><td>Graceful degradation</td><td>Losing a feature without losing the product.</td></tr>
+            <tr><td>YAGNI</td><td>Don't build machinery until the problem it solves actually exists.</td></tr>
+            <tr><td>Attack surface</td><td>Everything an attacker could reach. Shrinking it beats defending it.</td></tr>
+            <tr><td>Single source of truth</td><td>One place a fact is defined, so copies cannot disagree.</td></tr>
+            <tr><td>Regression suite</td><td>Tests re-run to prove old features still work.</td></tr>
+            <tr><td>Fail fast</td><td>Make silent no-ops impossible. Crash instead.</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <hr class="rule">
+
+      <h3>The four habits worth keeping</h3>
+
+      <ol>
+        <li><strong>The symptom is rarely where the cause lives.</strong> A white button, a flying menu, small-looking numbers — none of the causes were in the thing that misbehaved.</li>
+        <li><strong>Measure before you believe anyone, including yourself.</strong> "Too small" was the wrong diagnosis. So was a test that hard-coded a screen height. So was a formula that looked correct on the only phone it was tried on.</li>
+        <li><strong>Comment decisions, not syntax.</strong> Every comment quoted in this log explains <em>why</em> — a dead API, a containing block, an alias that would have gone wrong. None of them explain what the line does.</li>
+        <li><strong>Prefer the design with fewer moving parts.</strong> The database that wasn't built could not go stale, could not drift from the seed logic, and could not be poisoned.</li>
+      </ol>
+    </section>
+
+    <nav class="pager" aria-label="Pagination">
+      <button class="pbtn prev" id="prev" type="button">
+        <span class="dir">← Previous</span>
+        <span class="pt"></span>
+      </button>
+      <span class="counter" id="counter" aria-live="polite"></span>
+      <button class="pbtn next" id="next" type="button">
+        <span class="dir">Next →</span>
+        <span class="pt"></span>
+      </button>
+    </nav>
+  </main>
+</div>
+
+<script>
+  (function () {
+    var legs = Array.prototype.slice.call(document.querySelectorAll(".leg"));
+    var rail = document.getElementById("rail");
+    var prev = document.getElementById("prev");
+    var next = document.getElementById("next");
+    var counter = document.getElementById("counter");
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var current = 0;
+
+    // Build the rail from the sections themselves, so adding a leg needs
+    // no second edit here.
+    legs.forEach(function (leg, i) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "rail-link";
+      b.innerHTML =
+        '<span class="rail-num">' + String(i).padStart(2, "0") + "</span>" +
+        "<span>" + leg.dataset.short + "</span>";
+      b.addEventListener("click", function () { show(i, true); });
+      rail.appendChild(b);
+    });
+    var links = Array.prototype.slice.call(rail.children);
+
+    function pad(n) { return String(n).padStart(2, "0"); }
+
+    function show(n, scroll) {
+      current = Math.max(0, Math.min(legs.length - 1, n));
+
+      legs.forEach(function (leg, i) { leg.hidden = i !== current; });
+      links.forEach(function (a, i) {
+        if (i === current) a.setAttribute("aria-current", "page");
+        else a.removeAttribute("aria-current");
+      });
+
+      prev.disabled = current === 0;
+      next.disabled = current === legs.length - 1;
+      prev.querySelector(".pt").textContent =
+        current > 0 ? legs[current - 1].dataset.title : "";
+      next.querySelector(".pt").textContent =
+        current < legs.length - 1 ? legs[current + 1].dataset.title : "";
+      counter.textContent = pad(current + 1) + " / " + pad(legs.length);
+
+      history.replaceState(null, "", "#" + legs[current].id);
+
+      if (scroll) {
+        window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+        links[current].scrollIntoView({ block: "nearest", inline: "center" });
+      }
+    }
+
+    prev.addEventListener("click", function () { show(current - 1, true); });
+    next.addEventListener("click", function () { show(current + 1, true); });
+
+    document.addEventListener("keydown", function (e) {
+      var t = e.target;
+      if (t && (t.tagName === "INPUT" || t.tagName === "TEXTAREA")) return;
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (e.key === "ArrowLeft" && current > 0) { e.preventDefault(); show(current - 1, true); }
+      if (e.key === "ArrowRight" && current < legs.length - 1) { e.preventDefault(); show(current + 1, true); }
+    });
+
+    // Deep link support: /Journey.html#leg-08 opens on that leg.
+    var start = 0;
+    if (location.hash) {
+      var found = legs.findIndex(function (l) { return "#" + l.id === location.hash; });
+      if (found > -1) start = found;
+    }
+    show(start, false);
+  })();
+</script>
