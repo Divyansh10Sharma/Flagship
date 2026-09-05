@@ -17,24 +17,40 @@
  *
  *  3. Print resolution. These render at 20-60px and ship at 2172px.
  *
- * Idempotent — safe to re-run after dropping in a replacement asset.
+ * Every asset is derived from a pristine copy in assets-src/original/, which is
+ * seeded from public/ the first time the file is seen. Processing in place
+ * would not be idempotent — erosion compounds, so a second run would eat two
+ * more pixels of rim and a third would start chewing the artwork. Deriving
+ * from the original also means the erode and width values below can be
+ * re-tuned freely and the script simply re-run.
  *
  *   node scripts/clean-assets.mjs
  */
-import { readFile, writeFile, stat } from "node:fs/promises";
+import { readFile, writeFile, stat, mkdir, copyFile, access } from "node:fs/promises";
 import { join } from "node:path";
 import sharp from "sharp";
 
-const PUBLIC = join(import.meta.dirname, "..", "public");
+const ROOT = join(import.meta.dirname, "..");
+const PUBLIC = join(ROOT, "public");
+const ORIGINAL = join(ROOT, "assets-src", "original");
 
+// erode: how many pixels of rim to eat, driven by the measured fringe. `row`
+// and `sheet` are the bad ones — both came back with a rim averaging around
+// rgb(150,60,30). The rest only need a shave.
 const JOBS = [
-  // erode: how many pixels of rim to eat. Driven by the measured fringe —
-  // sheet's is the worst by a wide margin, the rest only need a shave.
   { file: "plate.webp", width: 1100, erode: 1, quality: 82 },
   { file: "sheet.webp", width: 900, erode: 3, quality: 82 },
   { file: "seal.webp", width: 360, erode: 1, quality: 88 },
   { file: "flourish.webp", width: 700, erode: 1, quality: 88 },
   { file: "pennant.webp", width: 220, erode: 1, quality: 88 },
+  { file: "rope-sheet.webp", width: 1000, erode: 1, quality: 86 },
+  { file: "plank.webp", width: 1000, erode: 1, quality: 82 },
+  { file: "tab-active.webp", width: 600, erode: 2, quality: 84 },
+  { file: "row.webp", width: 1000, erode: 3, quality: 82 },
+  { file: "sabres.webp", width: 520, erode: 2, quality: 86 },
+  { file: "galleon.webp", width: 820, erode: 1, quality: 84 },
+  { file: "avatar.webp", width: 170, erode: 1, quality: 88 },
+  { file: "cartouche.webp", width: 620, erode: 2, quality: 84 },
 ];
 
 const kb = (n) => `${Math.round(n / 1024)}KB`.padStart(6);
@@ -95,11 +111,23 @@ function contentBounds(data, W, H, C, frac = 0.004) {
   return { left, top, width: Math.max(1, right - left + 1), height: Math.max(1, bottom - top + 1) };
 }
 
+await mkdir(ORIGINAL, { recursive: true });
+
 for (const { file, width, erode, quality } of JOBS) {
   const path = join(PUBLIC, file);
-  const before = (await stat(path)).size;
+  const pristine = join(ORIGINAL, file);
 
-  const { data, info } = await sharp(await readFile(path))
+  // First sighting: the file in public/ is the generator's output, so bank it.
+  // Afterwards public/ holds a derived artefact and must never be the source.
+  try {
+    await access(pristine);
+  } catch {
+    await copyFile(path, pristine);
+  }
+
+  const before = (await stat(pristine)).size;
+
+  const { data, info } = await sharp(await readFile(pristine))
     .ensureAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });

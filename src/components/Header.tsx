@@ -34,39 +34,53 @@ export default function Header({ streak, email, onAuth }: Props) {
             initial={reduce ? false : { opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.1, ease: [0.34, 1.56, 0.64, 1] }}
-            className="ledger tabular flex h-9 items-center gap-1.5 px-3 text-brass"
+            /* Dark ink, not gold: the cartouche is a mid-tone brass plaque, so
+               gold-on-gold all but disappears. Struck into the metal is both
+               more legible and truer to how a real tag is engraved. */
+            className="cartouche ledger flex h-9 items-center gap-1.5"
             style={{
-              background: "rgba(10,8,6,0.5)",
-              border: "1px solid color-mix(in srgb, var(--gold) 34%, transparent)",
-              boxShadow:
-                "0 2px 6px rgba(0,0,0,0.5) inset, 0 1px 0 rgba(255,226,170,0.08)",
+              color: "#2b1d08",
+              fontWeight: 700,
+              textShadow: "0 1px 0 rgba(255,238,190,0.45)",
             }}
             title={`${streak} day streak`}
           >
             <span className="ledger" style={{ color: "inherit" }}>
               day
             </span>
-            {streak}
+            <span className="figures" style={{ fontWeight: 700 }}>
+              {streak}
+            </span>
           </motion.span>
         )}
 
-        <button
-          type="button"
-          onClick={onAuth}
-          className="btn btn-ghost h-9 min-w-9 px-3 text-[14px]"
-          aria-label={email ? `Signed in as ${email}` : "Sign in"}
-        >
-          {email ? (
-            <span
-              className="fell flex h-6 w-6 items-center justify-center text-[14px] uppercase"
-              style={{ background: "var(--brass)", color: "#2b1d08" }}
-            >
-              {email[0]}
-            </span>
-          ) : (
+        {/* Signed in, the brass medallion stands on its own; signed out it needs
+            a label, since an empty frame gives no hint that it is the way in. */}
+        {email ? (
+          <button
+            type="button"
+            onClick={onAuth}
+            className="block h-10 w-10 shrink-0"
+            aria-label={`Signed in as ${email}`}
+          >
+            <img
+              src="/avatar.webp"
+              alt=""
+              aria-hidden="true"
+              draggable={false}
+              className="h-full w-full select-none"
+            />
+          </button>
+        ) : (
+          <button
+            type="button"
+            onClick={onAuth}
+            className="btn btn-ghost h-9 px-3"
+            aria-label="Sign in"
+          >
             <span className="text-muted">Sign in</span>
-          )}
-        </button>
+          </button>
+        )}
       </div>
     </motion.header>
   );

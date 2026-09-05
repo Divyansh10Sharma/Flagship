@@ -23,32 +23,45 @@ import { join } from "node:path";
 import sharp from "sharp";
 
 const ROOT = join(import.meta.dirname, "..");
-const SRC = join(ROOT, "assets-src", "brassItems.png");
-const OUT = join(ROOT, "public", "icons");
 
-/** Reading order: left to right, top to bottom. */
-const NAMES = ["compass", "arrow", "anchor", "logbook", "flame", "trophy"];
-
-/** Normalised canvas. Each emblem is fitted inside this box preserving its own
- *  aspect, so a 2:1 arrow and a 1:1.3 anchor share an optical size rather than
- *  a bounding-box size. */
-const BOX = 256;
+const SHEETS = [
+  {
+    src: join(ROOT, "assets-src", "brassItems.png"),
+    out: join(ROOT, "public", "icons"),
+    /** Reading order: left to right, top to bottom. */
+    names: ["compass", "arrow", "anchor", "logbook", "flame", "trophy"],
+    /** Normalised canvas. Each piece is fitted inside this box preserving its
+     *  own aspect, so a 2:1 arrow and a 1:1.3 anchor share an optical size
+     *  rather than a bounding-box size. */
+    box: 256,
+  },
+  {
+    src: join(ROOT, "assets-src", "medallions-sheet.webp"),
+    out: join(ROOT, "public", "ranks"),
+    names: ["gold", "silver", "bronze"],
+    // Rank plates are square by construction and carry live text on top, so
+    // they keep more resolution than the emblems.
+    box: 320,
+  },
+];
 
 /** The generator leaves a faint glow in the gutters — alpha 1-3 rather than a
- *  clean 0. Left alone it survives as a grey halo once the icon is composited
- *  onto light parchment, and it also bridges neighbouring emblems into one
- *  connected component. */
+ *  clean 0. Left alone it survives as a grey halo once a piece is composited
+ *  onto light parchment, and it also bridges neighbours into one connected
+ *  component. */
 const ALPHA_FLOOR = 12;
 
-/** A component smaller than this is a generator speck, not an emblem. */
+/** A component smaller than this is a generator speck, not artwork. */
 const MIN_AREA = 2000;
 
+async function sliceSheet({ src, out: OUT, names: NAMES, box: BOX }) {
+const SRC = src;
 const { data, info } = await sharp(SRC)
   .ensureAlpha()
   .raw()
   .toBuffer({ resolveWithObject: true });
 const { width: W, height: H, channels } = info;
-console.log(`sheet ${W}x${H}`);
+console.log(`\n${SRC.split(/[\\/]/).pop()}  ${W}x${H}`);
 
 const solid = new Uint8Array(W * H);
 for (let i = 0; i < W * H; i++) {
@@ -102,7 +115,7 @@ for (let start = 0; start < W * H; start++) {
   }
 }
 
-// An emblem can break into more than one component — the trophy's handles read
+// A piece can break into more than one component — the trophy's handles read
 // as separate blobs at this alpha floor. Merge any boxes that overlap.
 const overlaps = (a, b) =>
   a.left <= b.left + b.width &&
@@ -130,7 +143,7 @@ while (merged) {
 
 if (boxes.length !== NAMES.length) {
   console.error(
-    `\nExpected ${NAMES.length} emblems, found ${boxes.length}. ` +
+    `\nExpected ${NAMES.length} pieces, found ${boxes.length}. ` +
       `Adjust MIN_AREA or ALPHA_FLOOR, or check the sheet.`
   );
   for (const b of boxes) console.error("  ", b);
@@ -179,8 +192,11 @@ for (let i = 0; i < ordered.length; i++) {
 
   await writeFile(join(OUT, `${name}.webp`), out);
   console.log(
-    `${name.padEnd(9)} at ${String(left).padStart(4)},${String(top).padStart(4)} ` +
-      `${String(width).padStart(3)}x${String(height).padStart(3)}  ->  ${BOX}x${BOX}  ` +
+    `  ${name.padEnd(9)} at ${String(left).padStart(4)},${String(top).padStart(4)} ` +
+      `${String(width).padStart(4)}x${String(height).padStart(4)}  ->  ${BOX}x${BOX}  ` +
       `${String(Math.round(out.length / 1024)).padStart(3)}KB`
   );
 }
+}
+
+for (const sheet of SHEETS) await sliceSheet(sheet);
