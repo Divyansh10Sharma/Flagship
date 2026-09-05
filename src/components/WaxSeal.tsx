@@ -1,37 +1,28 @@
-/** A pressed wax seal. The irregular border-radius is what stops it reading as
- *  a circle with a gradient — real wax spreads unevenly. */
-export default function WaxSeal({
-  size = 44,
-  label = "F",
-}: {
-  size?: number;
-  label?: string;
-}) {
+/**
+ * A pressed wax seal, photographed rather than drawn.
+ *
+ * The previous version built this from a radial gradient and an irregular
+ * border-radius. That reads as a red disc no matter how the numbers are tuned:
+ * wax gets its character from specular highlights on an uneven surface, the
+ * crazed crust, and the way the stamped relief goes near-black in its recesses
+ * — none of which a gradient can fake.
+ */
+export default function WaxSeal({ size = 56 }: { size?: number }) {
   return (
-    <span
+    <img
+      src="/seal.webp"
+      alt=""
       aria-hidden="true"
-      className="relative inline-flex shrink-0 items-center justify-center"
+      draggable={false}
+      width={size}
+      height={size}
+      className="block shrink-0 select-none"
       style={{
         width: size,
         height: size,
-        borderRadius: "47% 53% 51% 49% / 49% 47% 53% 51%",
-        background:
-          "radial-gradient(circle at 34% 30%, #b8402f 0%, #8c2f23 45%, #66200f 100%)",
-        boxShadow:
-          "0 1px 0 rgba(255,190,170,0.28) inset, 0 -2px 5px rgba(0,0,0,0.45) inset, 0 6px 14px -8px rgba(0,0,0,0.9)",
+        objectFit: "contain",
+        filter: "drop-shadow(0 3px 5px rgba(40,10,6,0.55))",
       }}
-    >
-      <span
-        className="fell"
-        style={{
-          fontSize: size * 0.46,
-          color: "#f0d2c6",
-          opacity: 0.8,
-          textShadow: "0 -1px 0 rgba(0,0,0,0.5)",
-        }}
-      >
-        {label}
-      </span>
-    </span>
+    />
   );
 }

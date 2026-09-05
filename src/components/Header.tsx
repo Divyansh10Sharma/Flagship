@@ -20,7 +20,12 @@ export default function Header({ streak, email, onAuth }: Props) {
     >
       <span className="flex items-center gap-2.5">
         <Logo size={24} />
-        <span className="fell text-[24px] leading-none text-chalk">Flagship</span>
+        <span
+          className="display text-[19px] leading-none"
+          style={{ color: "var(--brass)", textShadow: "0 1px 2px rgba(0,0,0,0.8)" }}
+        >
+          Flagship
+        </span>
       </span>
 
       <div className="flex items-center gap-2">
@@ -29,10 +34,12 @@ export default function Header({ streak, email, onAuth }: Props) {
             initial={reduce ? false : { opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3, delay: 0.1, ease: [0.34, 1.56, 0.64, 1] }}
-            className="tabular flex h-9 items-center gap-1.5 rounded-full px-3 text-[14px] text-brass"
+            className="ledger tabular flex h-9 items-center gap-1.5 px-3 text-brass"
             style={{
-              background: "color-mix(in srgb, var(--gold) 10%, transparent)",
-              border: "1px solid color-mix(in srgb, var(--gold) 30%, transparent)",
+              background: "rgba(10,8,6,0.5)",
+              border: "1px solid color-mix(in srgb, var(--gold) 34%, transparent)",
+              boxShadow:
+                "0 2px 6px rgba(0,0,0,0.5) inset, 0 1px 0 rgba(255,226,170,0.08)",
             }}
             title={`${streak} day streak`}
           >

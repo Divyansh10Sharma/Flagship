@@ -112,7 +112,7 @@ export default function Results({
 
       {isGuest && (
         <div className="parchment mt-6 flex gap-4 p-5">
-          <WaxSeal size={46} label="F" />
+          <WaxSeal size={46} />
           <div className="min-w-0 flex-1">
           <p className="fell text-[17px] leading-relaxed" style={{ color: "var(--sepia)" }}>
             Your streak is saved on this device. Sign in and it follows you

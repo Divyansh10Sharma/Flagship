@@ -23,6 +23,8 @@
   --font-sans: "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     sans-serif;
   --font-fell: "IM Fell English", Georgia, "Times New Roman", serif;
+  --font-display: "Cinzel", "IM Fell English", Georgia, serif;
+  --font-text: "EB Garamond", "IM Fell English", Georgia, serif;
 }
 
 :root {
@@ -36,6 +38,11 @@
   --parch-2: #d8c9a8;
   --sepia: #2a2015;
   --sepia-soft: #5c4a35;
+  /* Iron-gall ink at two strengths, for text sitting on parchment. --sepia-soft
+     was the old label colour and is too weak against the sheet's mottling —
+     these are the values the log card reads at. */
+  --ink: #3a2b17;
+  --ink-deep: #241a0e;
   --brass: #c9922b;
   --gold: #c9922b;
   --hit: #4e8c5a;
@@ -44,6 +51,35 @@
 
   --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
   color-scheme: dark;
+}
+
+/* Roman capitals, cut rather than set. Kept free of colour so it can be used
+   on parchment and on the dark alike — .emboss supplies the relief. */
+.display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Chased into metal rather than printed on it: a dark bevel below the stroke
+   and a warm catch-light above, so the letterform reads as displaced material.
+   Order matters — the highlight is painted last so it sits on top of the
+   shadow at the stroke's upper edge. Dark surfaces only. */
+.emboss {
+  color: #d9cbb0;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.85),
+    0 2px 1px rgba(0, 0, 0, 0.7),
+    0 3px 8px rgba(0, 0, 0, 0.6),
+    0 -1px 0 rgba(255, 236, 197, 0.28);
+}
+
+/* The same relief in reverse, for ink pressed into paper. Kept faint — a
+   stronger highlight fills the counters of 13px caps and costs more legibility
+   than the emboss is worth. */
+.pressed {
+  text-shadow: 0 1px 0 rgba(255, 252, 240, 0.32);
 }
 
 @layer base {
@@ -91,34 +127,73 @@
 }
 
 @layer components {
-  /* A page from the log. Paper colour, ink text, deckled by a soft edge mask. */
+  /* A page torn from the log.
+
+     The paper is painted by a ::before layer rather than by the element
+     itself, so the deckle filter can chew the sheet's edges without also
+     displacing the text sitting on it — running feDisplacementMap over the
+     whole component would smear every glyph. Content rides above on z-index. */
+  /* A page torn from the log — real photographed paper, nine-sliced.
+
+     This replaces an feTurbulence displacement filter that chewed a synthetic
+     deckle into a CSS gradient. The filter produced a believable outline but
+     nothing inside it: no foxing, no water staining pooling toward the edges,
+     no fibre. Those are the whole character of old paper, and the frayed
+     silhouette on its own reads as a torn sheet of printer stock.
+
+     border-image-outset pushes the torn frame beyond the border box, so the
+     ragged edge does not eat into the padding the content needs — the card
+     keeps its full interior while the paper overhangs it. */
   .parchment {
     position: relative;
     color: var(--sepia);
-    background-color: var(--parch);
-    /* real scanned paper, with the soft staining layered over it */
-    background-image:
-      radial-gradient(60% 40% at 15% 10%, rgba(120, 95, 55, 0.12), transparent 70%),
-      radial-gradient(50% 45% at 88% 82%, rgba(120, 95, 55, 0.14), transparent 70%),
-      url("/parchment.webp");
-    background-size: auto, auto, 320px 320px;
-    background-blend-mode: multiply, multiply, normal;
-    border-radius: 2px;
-    box-shadow:
-      0 1px 0 rgba(255, 255, 255, 0.35) inset,
-      0 18px 36px -22px rgba(0, 0, 0, 0.95);
-  }
-  /* a hairline of ink along the top edge, as if the page were pressed */
-  .parchment::before {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto 0;
-    height: 1px;
-    background: rgba(90, 70, 45, 0.25);
-    pointer-events: none;
+    background: none;
+    filter: drop-shadow(0 18px 26px rgba(0, 0, 0, 0.8));
+
+    border-style: solid;
+    border-width: 20px;
+    border-color: transparent;
+    border-image-source: url("/sheet.webp");
+    border-image-slice: 120 fill;
+    border-image-width: 22px;
+    border-image-outset: 8px;
+    /* stretch, not round: round tiles the middle slice a whole number of times
+       and every tile boundary shows as a vertical seam across the paper. A
+       stretched sheet of fibre and foxing has no repeat to give it away. */
+    border-image-repeat: stretch;
   }
   .parchment > * {
     position: relative;
+    z-index: 1;
+  }
+
+  /* Ink on paper needs more weight than chalk on dark.
+
+     The same 11.5px/600 that reads cleanly against the near-black backdrop
+     goes thin and washed out on parchment: the paper's mottling competes with
+     the strokes, and .pressed's highlight lifts the counters. Scoped to
+     .parchment so the dark screens keep their lighter setting. */
+  .parchment .ledger {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.13em;
+  }
+
+  /* A light wash pooled in the middle of the sheet. Old paper is lightest
+     where it has been least handled, and lifting the centre buys back the
+     contrast the mottling costs without touching the texture at the edges. */
+  .parchment::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: radial-gradient(
+      100% 78% at 50% 46%,
+      rgba(255, 250, 232, 0.42),
+      rgba(255, 250, 232, 0.16) 55%,
+      transparent 78%
+    );
+    pointer-events: none;
   }
 
   /* Ship's timber. Used where the surface should feel like part of the deck. */
@@ -149,6 +224,7 @@
   }
 
   .btn {
+    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -169,24 +245,50 @@
     opacity: 0.35;
   }
 
-  /* Struck brass plate, the kind screwed to a ship's fitting. */
+  /* Struck brass plate, the kind screwed to a ship's fitting. Real milled
+     grain from the texture, with the sheen painted over it as a gradient —
+     the texture is evenly lit by design, so the plate gets its curvature
+     here rather than being baked into the image. */
+  /* Cast brass nameplate, three-sliced from plate.webp.
+     The artwork carries its own chamfered corners, engraved double rule and a
+     compass rose at each end, so none of that is drawn here any more — and the
+     button no longer overlays icons of its own, which would collide with the
+     roses already struck into the metal.
+
+     border-image-slice takes 0 top and bottom, which collapses the nine-slice
+     to a horizontal three-slice: the two ornamented ends hold their aspect in
+     the left/right borders and the plain middle stretches between them. The
+     36px border is the cap's own width at this button's height (150 source px
+     x 56/241), so the roses are scaled rather than squashed. */
   .btn-primary {
+    /* IM Fell, not Cinzel: Cinzel has no lowercase — it renders "See today's
+       results" as small caps. The plate needs true mixed case. */
     font-family: var(--font-fell);
-    font-size: 19px;
-    letter-spacing: 0.03em;
-    color: #2b1d08;
-    background-color: #c9922b;
-    background-image: linear-gradient(
-      180deg,
-      rgba(255, 235, 180, 0.55) 0%,
-      rgba(255, 235, 180, 0) 42%,
-      rgba(70, 44, 8, 0.25) 100%
-    );
-    border: 1px solid #6d4a16;
-    box-shadow: 0 1px 0 rgba(255, 240, 200, 0.5) inset;
+    font-size: 21px;
+    letter-spacing: 0.01em;
+    color: #33230b;
+    background: none;
+    text-shadow: 0 1px 0 rgba(255, 242, 200, 0.55);
+
+    border-style: solid;
+    border-width: 0 36px;
+    border-color: transparent;
+    border-image-source: url("/plate.webp");
+    border-image-slice: 0 150 fill;
+    border-image-width: 0 36px;
+    border-image-repeat: stretch;
   }
+  /* Warmed by a wash rather than a background-color, which the border-image
+     now covers. */
   .btn-primary:hover:not(:disabled) {
-    background-color: #dda63a;
+    filter: brightness(1.08) saturate(1.05);
+  }
+
+  /* Carries the plate's cast shadow. drop-shadow reads the clipped silhouette
+     below it, so the shadow follows the chamfers instead of a bounding box. */
+  .plate-shadow {
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.75))
+      drop-shadow(0 2px 3px rgba(0, 0, 0, 0.5));
   }
 
   .btn-accent {
@@ -201,14 +303,59 @@
     background-color: #a3392b;
   }
 
+  /* Cut into the deck rather than laid on it — the dark fill and the lit
+     lower lip read as a recess catching the lantern from below. */
   .btn-ghost {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
     color: var(--chalk);
-    background: transparent;
+    background: rgba(10, 8, 6, 0.55);
     border: 1px solid var(--edge);
+    box-shadow:
+      0 2px 6px rgba(0, 0, 0, 0.5) inset,
+      0 1px 0 rgba(255, 226, 170, 0.07);
   }
   .btn-ghost:hover:not(:disabled) {
     border-color: var(--brass);
     color: var(--brass);
+  }
+
+  /* The flag as a plate on the table: paper grain multiplied over the artwork,
+     a hairline brass bezel, and a shadow deep enough to lift it off the chart. */
+  .flag-plate {
+    position: relative;
+    overflow: hidden;
+    border-radius: 3px;
+    box-shadow:
+      0 0 0 1px rgba(201, 146, 43, 0.28),
+      0 26px 50px -20px rgba(0, 0, 0, 0.95),
+      0 4px 12px rgba(0, 0, 0, 0.6);
+  }
+  .flag-plate::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 3px;
+    background-image: url("/parchment.webp");
+    background-size: 320px 320px;
+    mix-blend-mode: multiply;
+    opacity: 0.42;
+    pointer-events: none;
+  }
+  /* the bezel's own thickness, drawn over the grain */
+  .flag-plate::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: 3px;
+    box-shadow:
+      0 1px 0 rgba(255, 240, 205, 0.3) inset,
+      0 -10px 18px -14px rgba(0, 0, 0, 0.85) inset;
+    pointer-events: none;
   }
 
   /* Buttons sitting on parchment need ink, not chalk. */
@@ -257,6 +404,20 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Ledger figures.
+
+   IM Fell is an old-style face: its "0" is an x-height circle and its "1" an
+   unserifed I, so a lifetime score of 0 reads as a bullet and 1x as Ix. Cinzel
+   has lining figures but no lowercase at all, which turns "2 days" into small
+   caps. EB Garamond is the only one of the three that gives both — true
+   lowercase and, with lnum, full-height numerals. */
+.figures {
+  font-family: var(--font-text);
+  font-weight: 500;
+  font-variant-numeric: lining-nums tabular-nums;
+  font-feature-settings: "lnum" 1, "tnum" 1;
+}
+
 /* Same ledger treatment, but in Archivo — IM Fell's old-style figures turn
    "Flag 1 of 3" into "Flag ₁ of ₃". Any label carrying a number uses this. */
 .ledger-num {
@@ -268,11 +429,14 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Ledger heading: small, spaced, the way a log book column is titled. */
+/* Ledger heading: small, spaced, the way a log book column is titled.
+   Cinzel rather than IM Fell — at 12px caps the Fell's irregular letterpress
+   contours turn to mush, while Cinzel's clean Roman capitals hold. */
 .ledger {
-  font-family: var(--font-fell);
-  font-size: 12px;
-  letter-spacing: 0.22em;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 11.5px;
+  letter-spacing: 0.17em;
   text-transform: uppercase;
 }
 
@@ -330,6 +494,7 @@
 .breathe { animation: breathe 2s ease-in-out infinite; }
 
 .bob { animation: bob 7s ease-in-out infinite; }
+.lantern-glow { animation: lantern 9s ease-in-out infinite; }
 
 /* --------------------------------------------------------------- cursor --- */
 .cursor-dot,
@@ -378,6 +543,7 @@
   }
   .shake,
   .breathe,
+  .lantern-glow,
   .bob { animation: none !important; }
   .cursor-dot,
   .cursor-ring { display: none !important; }
