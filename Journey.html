@@ -1253,9 +1253,77 @@ setInset(covered &gt; 24 ? Math.round(covered) : 0);</code></pre>
     </section>
 
     <!-- ============================ 14 ============================ -->
-    <section class="leg" id="leg-14" data-short="Bearings" data-title="Bearings — the whole vocabulary" hidden>
+    <section class="leg" id="leg-14" data-short="Chart mode" data-title="Chart mode — placing a country on the map" hidden>
       <header class="bearing">
-        <p class="eyebrow">Leg 14 · Reference</p>
+        <p class="eyebrow">Leg 14 · Second game</p>
+        <h2>Placing a country on the map</h2>
+        <p class="dek">A second game behind a toggle, where "how close were you" turned out to be the whole problem.</p>
+      </header>
+
+      <div class="plain">
+        <h4>In plain words</h4>
+        <p>A switch in the top bar flips between Flags and Map. In Map mode you are given five random countries by name, one at a time. You tap where you think each one is, lock the pin in, and the map zooms to show the real country, a dashed line to it, and your points: 5,000 for landing on it, fewer the further off you were.</p>
+        <p>It is deliberately walled off from the flag game — no daily seed, no streak, no sync. The only thing it remembers is your best score, in the browser.</p>
+      </div>
+
+      <h4>Before we started</h4>
+      <p>The map itself is drawn in code rather than from an image: country outlines come from a public atlas file and a projection library turns latitude and longitude into screen positions. Drawing it means the same code can answer the reverse question — "which latitude and longitude did the player just tap?" — which is exactly what scoring needs.</p>
+
+      <h3>Two datasets that don't speak the same language</h3>
+
+      <p>Our country list is keyed by two-letter codes (<code>FR</code>). The atlas is keyed by three-digit numeric codes (<code>250</code>). Nothing in either file connects them, so a small generated file does: one script pulls the same source dataset the country list came from and writes the code, numeric id and a centre point for all 195.</p>
+
+      <div class="measured">
+        <table>
+          <caption>Which atlas resolution actually contains our countries</caption>
+          <thead><tr><th>Atlas</th><th class="num">Size</th><th>Countries missing</th></tr></thead>
+          <tbody>
+            <tr><td>Low detail (110m)</td><td class="num">108 kB</td><td class="was">29 — Singapore, Malta, Monaco, most small island states</td></tr>
+            <tr><td>Medium detail (50m)</td><td class="num">756 kB</td><td class="now">1 — Tuvalu</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>The smaller file would have silently made a seventh of the game unscoreable. The medium one is seven times larger, so it is loaded only when Map mode is opened — flag players never download it. Tuvalu, the one gap, falls back to distance from its centre point.</p>
+
+      <h3>What "close" should mean</h3>
+
+      <div class="bug">
+        <div class="bug-row sym">
+          <div class="k">Symptom</div>
+          <div class="v">The obvious rule — distance from the tap to the country's centre — punishes correct answers. A tap in eastern Siberia is inside Russia and still thousands of kilometres from Russia's centre.</div>
+        </div>
+        <div class="bug-row">
+          <div class="k">Cause</div>
+          <div class="v">A centre point stands in for a shape, and the bigger the country the worse the stand-in. Worse still, a check found <strong>24 of the 195 centre points lie outside their own country's outline</strong> — mostly coastal and archipelago nations whose "centre" is at sea.</div>
+        </div>
+        <div class="bug-row fix">
+          <div class="k">Fix</div>
+          <div class="v">
+            <p>Score against the shape, never the centre. If the tap is inside the outline, the distance is zero. Otherwise it is the distance to the nearest point on the border. The centre is only used to draw a highlight ring, where being slightly off does no harm.</p>
+            <p>Distance is measured on the globe, not in screen pixels: the projection stretches the far north and south, so a pixel near Greenland covers far less ground than one at the equator.</p>
+          </div>
+        </div>
+      </div>
+
+      <p>Points fall away smoothly — <code>5000 × e<sup>−distance / 1500 km</sup></code> — so a near miss is worth nearly as much as a hit, and a guess on the wrong continent is worth almost nothing. Anything within 25 km of the border counts as exact, because a micro-state is a handful of pixels even zoomed in, and a tap is a fingertip wide.</p>
+
+      <h3>A tap, a drag and a pinch start as the same event</h3>
+
+      <p>On a touchscreen, placing a pin, panning the map and zooming all begin with a finger going down. The browser cannot know which one the player means until the finger moves or lifts. So the map watches: one finger that moves less than five pixels is a tap and drops the pin; anything more is a pan; a second finger means a pinch, and that gesture can never become a tap afterwards. Scroll-to-zoom needs a listener registered as <em>non-passive</em>, or the browser scrolls the page underneath the map at the same time.</p>
+
+      <p>Two smaller details keep zooming from looking wrong. Borders use a stroke that ignores the zoom level, so a 60× zoom doesn't draw borders 60× thicker. And the pin is scaled by the inverse of the zoom, so it stays the same size on screen while the world grows under it.</p>
+
+      <div class="term">
+        <h4>The terms for it</h4>
+        <p><span class="word">Map projection</span> — flattening the globe, and its <span class="word">inverse</span>, turning a screen point back into coordinates. <span class="word">Great-circle distance</span> — distance along the Earth's surface. <span class="word">Point-in-polygon</span> — the "is the tap inside the country" test. <span class="word">Join key</span> — the shared field that links two datasets. <span class="word">Code splitting</span> / <span class="word">lazy loading</span> — shipping the atlas only to those who need it. <span class="word">Exponential decay</span> — the scoring curve. <span class="word">Gesture disambiguation</span> and <span class="word">touch slop</span> — telling a tap from a drag. <span class="word">Passive event listener</span> — one that promises never to cancel scrolling. <span class="word">Antimeridian</span> — the 180° line that makes Russia and Fiji span both edges of the map.</p>
+      </div>
+    </section>
+
+    <!-- ============================ 15 ============================ -->
+    <section class="leg" id="leg-15" data-short="Bearings" data-title="Bearings — the whole vocabulary" hidden>
+      <header class="bearing">
+        <p class="eyebrow">Leg 15 · Reference</p>
         <h2>Bearings</h2>
         <p class="dek">Every term in this log, in one place, with the plain-language version beside it.</p>
       </header>
@@ -1291,6 +1359,11 @@ setInset(covered &gt; 24 ? Math.round(covered) : 0);</code></pre>
             <tr><td>Single source of truth</td><td>One place a fact is defined, so copies cannot disagree.</td></tr>
             <tr><td>Regression suite</td><td>Tests re-run to prove old features still work.</td></tr>
             <tr><td>Fail fast</td><td>Make silent no-ops impossible. Crash instead.</td></tr>
+            <tr><td>Map projection</td><td>A formula that flattens the globe onto a screen, and back again.</td></tr>
+            <tr><td>Great-circle distance</td><td>Distance over the Earth's surface, not across the flat map.</td></tr>
+            <tr><td>Point-in-polygon</td><td>Testing whether a point lies inside a shape.</td></tr>
+            <tr><td>Code splitting</td><td>Shipping a large piece of the app only when it is first needed.</td></tr>
+            <tr><td>Passive listener</td><td>An event handler that promises not to block scrolling.</td></tr>
           </tbody>
         </table>
       </div>

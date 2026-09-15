@@ -634,3 +634,67 @@ html[data-picker="open"] [data-app-header] {
 html[data-picker="open"] [data-flag-box] {
   margin-top: 0.5rem;
 }
+
+/* ------------------------------------------------------------ chart mode -- */
+:root {
+  --map-sea: #0f1c1d;
+  --map-sea-deep: #1d3a3d;
+  --map-land: #d9c9a3;
+  --map-border: #7a6443;
+}
+
+/* The mode switch: a recess in the deck with a brass slider riding in it. */
+.mode-toggle {
+  border-radius: 999px;
+  background: rgba(10, 8, 6, 0.6);
+  border: 1px solid var(--edge);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5) inset;
+}
+.mode-toggle button:focus-visible {
+  outline: 1px solid var(--brass);
+  outline-offset: 2px;
+  border-radius: 999px;
+}
+.mode-thumb {
+  border-radius: 999px;
+  background: linear-gradient(180deg, #e2b458 0%, #c9922b 55%, #9c6d1c 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 238, 190, 0.5) inset,
+    0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.map-frame {
+  border-radius: 4px;
+  box-shadow:
+    0 0 0 1px rgba(201, 146, 43, 0.45),
+    0 0 0 5px rgba(20, 16, 11, 0.9),
+    0 0 0 6px rgba(201, 146, 43, 0.25),
+    0 26px 50px -20px rgba(0, 0, 0, 0.95);
+}
+
+.map-ctl {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 3px;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--chalk);
+  background: rgba(10, 8, 6, 0.75);
+  border: 1px solid var(--edge);
+}
+.map-ctl:hover {
+  border-color: var(--brass);
+  color: var(--brass);
+}
+
+@keyframes map-ring {
+  0%, 100% { stroke-opacity: 1; }
+  50% { stroke-opacity: 0.35; }
+}
+.map-ring { animation: map-ring 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .map-ring { animation: none; }
+}

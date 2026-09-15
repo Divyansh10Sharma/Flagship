@@ -6,6 +6,8 @@ import Cursor from "./components/Cursor";
 import Header from "./components/Header";
 import Leaderboard from "./components/Leaderboard";
 import Home from "./components/Home";
+import MapGame from "./components/MapGame";
+import type { Mode } from "./components/ModeToggle";
 import Results from "./components/Results";
 import Round from "./components/Round";
 import SyncStatus from "./components/SyncStatus";
@@ -82,6 +84,8 @@ export default function App() {
   const [screen, setScreen] = useState<Screen>("home");
   const [game, setGame] = useState<Game | null>(null);
   const [booted, setBooted] = useState(false);
+  // Chart mode is its own game: no daily seed, no streak, no sync.
+  const [mode, setMode] = useState<Mode>("flags");
 
   const [userId, setUserId] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
@@ -291,14 +295,31 @@ export default function App() {
   // One key per distinct view, so a screen change cross-fades instead of
   // snapping. The round keys on its own index too, so each flag animates in.
   const viewKey =
-    screen === "playing" && game ? `playing-${game.roundIndex}-${game.phase}` : screen;
+    mode === "map"
+      ? "map"
+      : screen === "playing" && game
+        ? `playing-${game.roundIndex}-${game.phase}`
+        : screen;
+  const canSwitch = mode === "map" || screen === "home";
+  const switchMode = (m: Mode) => {
+    if (m === "flags") setScreen("home");
+    setMode(m);
+  };
 
   return (
     <div className="min-h-dvh px-5 pb-28">
       <Background />
       <Cursor />
-      <div className="mx-auto w-full max-w-[560px]">
-        <Header streak={streak} email={email} onAuth={() => setAuthOpen(true)} />
+      <div
+        className={`mx-auto w-full ${mode === "map" ? "max-w-[1040px]" : "max-w-[560px]"}`}
+      >
+        <Header
+          streak={streak}
+          email={email}
+          onAuth={() => setAuthOpen(true)}
+          mode={canSwitch ? mode : undefined}
+          onMode={switchMode}
+        />
 
         <AnimatePresence mode="wait" initial={false}>
         <motion.div
@@ -308,7 +329,9 @@ export default function App() {
           exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8 }}
           transition={{ duration: reduce ? 0 : 0.26, ease: [0.22, 1, 0.36, 1] }}
         >
-        {!booted ? null : screen === "playing" && game ? (
+        {!booted ? null : mode === "map" ? (
+          <MapGame />
+        ) : screen === "playing" && game ? (
           <Round
             country={BY_CODE[game.codes[game.roundIndex]]}
             roundIndex={game.roundIndex}
